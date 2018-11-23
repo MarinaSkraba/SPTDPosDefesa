@@ -5,9 +5,11 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
+import org.hibernate.annotations.Proxy;
 
 @Entity(name = "diretorEnsino")
 @PrimaryKeyJoinColumn(name = "idUsuario")
+@Proxy(lazy = false)
 public class DiretorEnsino extends Usuario implements Serializable {
 
     @OneToMany(mappedBy = "diretorEnsino")

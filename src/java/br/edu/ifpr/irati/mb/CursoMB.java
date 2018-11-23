@@ -6,13 +6,14 @@ import br.edu.ifpr.irati.dao.GenericDAO;
 import br.edu.ifpr.irati.dao.ICursoDAO;
 import br.edu.ifpr.irati.modelo.Curso;
 import br.edu.ifpr.irati.modelo.DiretorEnsino;
+import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class CursoMB {
+public class CursoMB implements Serializable{
 
     private Curso curso;
     private Curso cursoSelecionado;

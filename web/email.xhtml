@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Usado para testes de envio de e-mail</title>
+    </h:head>
+    <h:body>
+        <p>Após os últimos testes usando a configuração final do servidor de e-mails deverá ser removido.</p>
+
+        <h:form prependId="false"> <!-- sem a propriedade prependId="false" não funciona -->
+            <div id="accordion" style="width: 1000px; margin: 0 auto;">
+                <h3>Envio de Email</h3>
+                <div>
+                    <h:panelGroup>
+                        <!-- em um sistema real não há necessidade de exibir os ids -->
+                        <h:panelGrid columns="2">                            
+
+                            <h:outputText value="Email do destinatário " />
+                            <h:inputText value="#{emailMB.destinatario}" size="40" />
+
+                            <h:outputText value="Assunto " />
+                            <h:inputText value="#{emailMB.assunto}" size="30" />
+
+                            <h:outputText value="Mensagem " />
+                            <h:inputText value="#{emailMB.texto}" size="60" />
+
+                            <h:commandButton  action="#{emailMB.enviarEmail()}" value="Enviar" />
+                            <h:commandButton  action="#{emailMB.limparCampos()}" value="Limpar" />                                                                                   
+                        
+                            <h:outputText value="#{emailMB.retornoEnvio}" rendered="#{emailMB.retornoEnvio.length() != 0}"/>
+                            
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </div>                
+            </div>
+        </h:form>
+
+
+    </h:body>
+</html>

@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.edu.ifpr.irati.mb;
 
 import br.edu.ifpr.irati.dao.Dao;
 import br.edu.ifpr.irati.dao.GenericDAO;
-import br.edu.ifpr.irati.modelo.Aula;
 import br.edu.ifpr.irati.modelo.Horario;
 import br.edu.ifpr.irati.modelo.ManutencaoEnsino;
 import br.edu.ifpr.irati.modelo.PTD;
@@ -20,7 +14,7 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class ManutencaoMB {
+public class ManutencaoMB implements Serializable{
 
     private ManutencaoEnsino manutencaoEnsino;
     private ManutencaoEnsino manutencaoEnsinoSelecionadoParaManutencaoEnsino;
@@ -70,22 +64,9 @@ public class ManutencaoMB {
     }
 
     public String excluirManutencao(ManutencaoEnsino manutencaoEnsino, PTD ptd) {
-        Dao<ManutencaoEnsino> manutencaoEnsinoDAO = new GenericDAO<>(ManutencaoEnsino.class);
-        Dao<TipoManutencao> tipoManutencaoDAO = new GenericDAO<>(TipoManutencao.class);
-        Dao<Horario> horarioDAO = new GenericDAO<>(Horario.class);
-        Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
-
-        List<Horario> aux = new ArrayList<>(manutencaoEnsino.getHorariosManutecao());
-        for (Horario h: aux) {
-            manutencaoEnsino.getHorariosManutecao().remove(h);
-            manutencaoEnsinoDAO.alterar(manutencaoEnsino);
-            horarioDAO.excluir(h);
-        }
+        Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);       
         ptd.getManutencoesEnsino().remove(manutencaoEnsino);
         ptdDAO.alterar(ptd);
-        manutencaoEnsinoDAO.excluir(manutencaoEnsino);
-        tipoManutencaoDAO.excluir(manutencaoEnsino.getTipoManutencao());
-
         return "CriarCorrigirPTD?faces-redirect=true";
     }
 

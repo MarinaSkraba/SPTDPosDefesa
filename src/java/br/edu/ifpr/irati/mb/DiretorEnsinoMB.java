@@ -7,6 +7,7 @@ import br.edu.ifpr.irati.modelo.PTD;
 import br.edu.ifpr.irati.modelo.Usuario;
 import br.edu.ifpr.irati.util.Digest;
 import br.edu.ifpr.irati.util.HashGenerationException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,7 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class DiretorEnsinoMB {
+public class DiretorEnsinoMB implements Serializable{
 
     private DiretorEnsino diretorEnsino;
     private DiretorEnsino diretorEnsinoSelecionado;

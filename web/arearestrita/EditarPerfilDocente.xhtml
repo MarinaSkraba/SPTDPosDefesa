@@ -5,8 +5,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Edição de diretor</title>
-        <link rel="stylesheet" type="text/css" href="css/css.css"/>
+        <title>Edição de perfil</title>
+        <link rel="stylesheet" type="text/css" href="../css/css.css"/>
         <h:outputStylesheet name="webjars/font-awesome/4.4.0/css/font-awesome.css"/>
     </h:head>
 
@@ -56,9 +56,36 @@
                                  iconPos="right"
                                  icon="/img/Search/searchLarger_24.png"
                                  value="Voltar"
-                                 action="PerfilDiretorEnsino"
+                                 action="/PerfilDocente"
                                  ajax="false"
                                  style="float: left;"/>
+
+                <p:commandButton id="logout"
+                                 image="img/fundo_login.png" 
+                                 styleClass="imgLogado"/>
+
+                <!-- Informações e Logout -->
+                <p:overlayPanel id="Usuário" 
+                                for="logout" 
+                                hideEffect="fade" 
+                                style="padding: 0px;">
+                    <h:outputText value="#{usuarioMB.usuarioLogado.email}" 
+                                  styleClass="text01"
+                                  style="color: #1785ad; font-weight: normal; font-size: large; margin: 0px;"/>
+                    <br/>
+                    <p:commandButton value="Sair"
+                                     styleClass="opVermelhaMenu"
+                                     style="margin: 0px;"
+                                     ajax="false" 
+                                     immediate="true"
+                                     actionListener="#{usuarioMB.realizarLogout()}"
+                                     action="/Login?faces-redirect=true"/>
+                </p:overlayPanel>
+
+                <h:outputText value="#{usuarioMB.usuarioLogado.nomeCompleto}" 
+                              styleClass="text01"
+                              style="color: white; float: right; font-weight: normal; font-size: large;"/>
+
             </h:form>
         </div>
 
@@ -68,7 +95,7 @@
               color="#A8A8A8" 
               style="margin: 20px; font-weight: 100;" 
               styleClass="text">
-            Edição Diretor de Ensino
+            Editar Perfil
         </font>
 
         <div id="screen">
@@ -87,8 +114,8 @@
                                           styleClass="text01"
                                           style="font-size: large; float: right;"/>
                             <p:inputText id="nome"
-                                         title="Insira seu nome completo"
-                                         value="#{diretorEnsinoMB.diretorEnsinoSelecionado.nomeCompleto}"
+                                         title="Insira seu nome"
+                                         value="#{professorMB.professorSelecionado.nomeCompleto}"
                                          style="margin: 5px; font-size: large;"
                                          styleClass="text01"/>
                             <h:outputText value="Email: "
@@ -96,16 +123,15 @@
                                           style="font-size: large; float: right;"/>
                             <p:inputText id="email"
                                          title="Insira um email com o domínio @ifpr.edu.br"
-                                         value="#{diretorEnsinoMB.diretorEnsinoSelecionado.email}"
+                                         value="#{professorMB.professorSelecionado.email}"
                                          style="margin: 5px; font-size: large;"
                                          styleClass="text01"/>
                             <h:outputText value="Senha: "
-                                          title="Insira uma senha entre 8 e 16 caracteres"
                                           styleClass="text01"
                                           style="font-size: large; float: right;"/>
                             <p:password id="senha"
                                         title="Insira uma senha entre 8 e 16 caracteres"
-                                        value="#{diretorEnsinoMB.diretorEnsinoSelecionado.senhaAlfanumerica}"
+                                        value="#{professorMB.professorSelecionado.senhaAlfanumerica}"
                                         style="margin: 5px; font-size: large;"
                                         styleClass="text01"/>
                             <h:outputText value="Confirmação senha: "
@@ -113,10 +139,61 @@
                                           style="font-size: large; float: right;"/>
                             <p:password id="confirmacaoSenha"
                                         title="Insira novamente a senha"
-                                        value="#{diretorEnsinoMB.confirmacaoSenhaSelecionado}"
+                                        value="#{professorMB.confirmacaoSenhaSelecionada}"
                                         style="margin: 5px; font-size: large;"
                                         styleClass="text01"/>
                         </h:panelGrid>
+                        <br/>
+                        <h:outputText value="Perfil Docente" 
+                                      styleClass="text01" />
+                        <hr size="1px" style="color: #1785ad; width: 90%; opacity: 0.5; margin: 0; float: bottom;"/>
+                        <br/>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Matrícula SIAPE: "
+                                          styleClass="text01"
+                                          style="font-size: large; float: right;"/>
+                            <p:inputMask mask="9999999"
+                                         value="#{professorMB.professorSelecionado.matriculaSIAPE}"
+                                         style="margin: 5px; font-size: large;"
+                                         styleClass="text01"/>
+                            <h:outputText value="Regime de trabalho: "
+                                          styleClass="text01"
+                                          style="font-size: large; float: right;"/>
+                            <p:selectOneRadio value="#{professorMB.professorSelecionado.regimeTrabalho}" 
+                                              style="font-size: large;"
+                                              styleClass="text01"
+                                              layout="grid" 
+                                              columns="1">
+                                <f:selectItem itemLabel=" Dedicação Exclusiva" 
+                                              itemValue="Dedicação Exclusiva" />
+                                <f:selectItem itemLabel=" 40 horas" 
+                                              itemValue="40h" />
+                                <f:selectItem itemLabel=" 20 horas" 
+                                              itemValue="20h" />
+                            </p:selectOneRadio>
+                            <h:outputText value="Tipo de contrato: "
+                                          styleClass="text01"
+                                          style="font-size: large; float: right;"/>
+                            <p:selectOneRadio value="#{professorMB.professorSelecionado.tipoContrato}" 
+                                              layout="grid" columns="1"
+                                              style="font-size: large;"
+                                              styleClass="text01">
+                                <f:selectItem itemLabel=" Efetivo" 
+                                              itemValue="Efetivo" />
+                                <f:selectItem itemLabel=" Temporário" 
+                                              itemValue="Temporario" />
+                            </p:selectOneRadio>
+                            <h:outputText value="Data de contratação: "
+                                          styleClass="text01"
+                                          style="font-size: large; float: right;"/>
+                            <p:calendar value="#{professorMB.professorSelecionado.dataContratacao}" 
+                                        mode="popup" 
+                                        locale="pt"
+                                        size="17"
+                                        style="margin: 5px; font-size: large;"
+                                        styleClass="text01"/>
+                        </h:panelGrid>
+                        <br/>
 
                         <!-- Temporizador -->
                         <p:poll interval="1" update="botaoAcao"/>
@@ -125,52 +202,50 @@
                                          update="botaoAcao"
                                          styleClass="botaoAzul" 
                                          style="border-radius: 30px; font-size: large; margin-left: 10px;" 
-                                         value="Editar"
-                                         onclick="PF('#{diretorEnsinoMB.verificarPossibilidadeAtualizacaoDiretorEnsino()}').show();"/>
+                                         value="Alterar"
+                                         onclick="PF('#{professorMB.verificarPossibilidadeAtualizacao()}').show();"/>
 
                     </div>
-
                 </center>
 
                 <!-- Temporizador -->
                 <p:poll interval="1" update="erros"/>
 
-                <!-- Caixa de confirmação de cadastro -->
-                <p:dialog header="Confirmar edição" 
-                          widgetVar="confirmarEdicaoDiretorEnsinoDialog" 
+                <!-- Caixa de confirmação de edição -->
+                <p:dialog header="Confirmar cadastro" 
+                          widgetVar="confirmarEdicaoDocenteDialog" 
                           modal="true" 
                           showEffect="fade" 
                           hideEffect="fade" 
                           resizable="false">
 
-                    <h:outputText value="Edição concluída" 
+                    <h:outputText value="Você realmente deseja alterar essas informações?" 
                                   styleClass="text01"
-                                  style="margin: 10px; font-size: large; width: 400px;"/>
+                                  style="margin: 10px 25px -10px 25px; font-size: large; width: 400px;"/>
                     <br/>
 
                     <p:commandButton styleClass="botaoAzul" 
                                      value="Confirmar"
                                      ajax="false"
-                                     actionListener="#{diretorEnsinoMB.alterarDiretorEnsino()}"
-                                     action="/PerfilDiretorEnsino"/>
+                                     action="#{professorMB.alterarProfessor()}"/>
 
                 </p:dialog>
 
                 <!-- Caixa de aviso de erro -->
                 <p:dialog header="Não permitido" 
-                          widgetVar="erroEdicaoDiretorEnsinoDialog" 
+                          widgetVar="erroEdicaoDocenteDialog" 
                           modal="true" 
                           showEffect="fade" 
                           hideEffect="fade" 
                           resizable="false">
 
-                    <h:outputText value="A alteração não pode ser efetivada devido aos erros indicados" 
+                    <h:outputText value="O cadastro ainda não pode ser concluído por causa dos seguintes " 
                                   styleClass="text01"
-                                  style="margin: 10px; font-size: large; width: 400px;"/>
+                                  style="margin: 10px 25px -10px 25px; font-size: large; width: 400px;"/>
                     <br/>
 
                     <h:dataTable  id="erros"
-                                  value="#{diretorEnsinoMB.errosEdicaoDiretorEnsino}" 
+                                  value="#{professorMB.errosEdicaoProfessor}" 
                                   var="erroEdicao" 
                                   style="width: auto;"
                                   headerClass="text-center"
@@ -185,6 +260,7 @@
                                           style="font-size: large; color: #C92345; width: 400px;"/>
                         </h:column>
                     </h:dataTable>
+                    <br/>
 
                 </p:dialog>
 

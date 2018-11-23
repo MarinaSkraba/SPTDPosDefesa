@@ -39,7 +39,7 @@ public class PTDDAO implements IPTDDAO {
         }
         session.clear();
         session.close();
-        return filtrados;
+        return filtrarDuplicacoes(filtrados);
     }
 
     @Override
@@ -52,9 +52,9 @@ public class PTDDAO implements IPTDDAO {
         List<PTD> results = query.list();
         session.clear();
         session.close();
-        return results;
+        return filtrarDuplicacoes(results);
     }
-    
+
     @Override
     public List<PTD> buscarPTDsArquivadosPorProfessor(Serializable idUsuario) {
         int id = (int) idUsuario;
@@ -71,7 +71,7 @@ public class PTDDAO implements IPTDDAO {
         }
         session.clear();
         session.close();
-        return filtrados;
+        return filtrarDuplicacoes(filtrados);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class PTDDAO implements IPTDDAO {
         }
         session.clear();
         session.close();
-        return filtrados;
+        return filtrarDuplicacoes(filtrados);
     }
 
     @Override
@@ -98,18 +98,19 @@ public class PTDDAO implements IPTDDAO {
         int id = (int) idUsuario;
         Session session = HibernateUtil.getSessionFactory().openSession();
         String estado = "EDICAO";
-        String hql = "from ptd p where p.estadoPTD like '" + estado + "' ";
+        String hql = "from ptd p where p.estadoPTD like '" + estado + "' and p.professor.idUsuario = " + id;
         Query query = session.createQuery(hql);
         List<PTD> results = query.list();
-        List<PTD> filtrados = new ArrayList<>();
-        for (PTD ptd : results) {
-            if (ptd.getProfessor().getIdUsuario() == id) {
-                filtrados.add(ptd);
-            }
-        }
+        //List<PTD> filtrados = new ArrayList<>();
+        //for (PTD ptd : results) {
+        //    if (ptd.getProfessor().getIdUsuario() == id) {
+        //        filtrados.add(ptd);
+        //    }
+        //}
         session.clear();
         session.close();
-        return filtrados;
+        return filtrarDuplicacoes(results);
+        //return filtrados;
     }
 
     @Override
@@ -121,7 +122,7 @@ public class PTDDAO implements IPTDDAO {
         List<PTD> results = query.list();
         session.clear();
         session.close();
-        return results;
+        return filtrarDuplicacoes(results);
     }
 
     @Override
@@ -140,7 +141,7 @@ public class PTDDAO implements IPTDDAO {
         }
         session.clear();
         session.close();
-        return filtrados;
+        return filtrarDuplicacoes(filtrados);
     }
 
     @Override
@@ -173,7 +174,7 @@ public class PTDDAO implements IPTDDAO {
         }
         session.clear();
         session.close();
-        return filtrados;
+        return filtrarDuplicacoes(filtrados);
     }
 
     @Override
@@ -182,19 +183,23 @@ public class PTDDAO implements IPTDDAO {
         String estadoConcluido = "CONCLUÍDO";
         String estadoArquivado = "ARQUIVADO";
         Session session = HibernateUtil.getSessionFactory().openSession();
-        String hql = "from ptd p where p.estadoPTD like '"+ estadoConcluido +"' or p.estadoPTD like '" + estadoArquivado + "' ";
+        String hql = "from ptd p where p.estadoPTD like '" + estadoConcluido + "' or p.estadoPTD like '" + estadoArquivado + "' ";
         Query query = session.createQuery(hql);
         List<PTD> results = query.list();
         List<PTD> filtrados = new ArrayList<>();
         for (PTD ptd : results) {
             for (Administracao a : ptd.getAdministrativas()) {
                 if (a.getTipoAdministracao().getRotulo().toUpperCase().contains(rotuloAtividade.toUpperCase())) {
-                    filtrados.add(ptd);
+                    if (filtrados.contains(ptd) == false) {
+                        filtrados.add(ptd);
+                    }
                 }
             }
             for (Apoio ap : ptd.getApoios()) {
                 if (ap.getTipoApoio().getRotulo().toUpperCase().contains(rotuloAtividade.toUpperCase())) {
-                    filtrados.add(ptd);
+                    if (filtrados.contains(ptd) == false) {
+                        filtrados.add(ptd);
+                    }
                 }
             }
             for (AtividadeASerProposta asp : ptd.getAtividadesASeremPropostas()) {
@@ -238,7 +243,102 @@ public class PTDDAO implements IPTDDAO {
 
         session.clear();
         session.close();
-        return filtrados;
+        return filtrarDuplicacoes(filtrados);
 
     }
+
+    /**
+     * Esta classe DAO está retornando os objetos duplicados ou até quadruplicados. 
+     * Por este motivo o método filtrarDuplicacoes foi implementado... 
+     * 
+     * Trata-se por uma solução GAMBIARRA para resolver o problema das duplicações de objetos
+     *
+     * Deverá ser substituída por outra camada DAO que consulte o banco e não
+     * traga valores duplicados.
+     *
+     * Possível causa de duplicação - Problema com chaves estrangeiras... quando
+     * são feitas junções nas tabelas os registros voltam replicados.
+     *
+     * @return
+     */
+    private List<PTD> filtrarDuplicacoes(List<PTD> ptds) {
+        List<PTD> ptdsFiltrados = new ArrayList<>();
+
+        List<Aula> aulas = new ArrayList<>();
+        List<Apoio> apoios = new ArrayList<>();
+        List<ManutencaoEnsino> manutencoes = new ArrayList<>();
+        List<Administracao> administrativas = new ArrayList<>();
+        List<Participacao> participacoes = new ArrayList<>();
+        List<AtividadeASerProposta> atvPropostas = new ArrayList<>();
+        List<OutroTipoAtividade> outras = new ArrayList<>();
+
+        for (PTD ptd : ptds) {
+            if (!ptdsFiltrados.contains(ptd)) {
+                for (Aula a : ptd.getAulas()) {
+                    if (!aulas.contains(a)) {
+                        a.setHorariosAula(filtrarDuplicacoesHorario(a.getHorariosAula()));
+                        aulas.add(a);
+                    }
+                }
+                for (Apoio a : ptd.getApoios()) {
+                    if (!apoios.contains(a)) {
+                        a.setHorariosApoio(filtrarDuplicacoesHorario(a.getHorariosApoio()));
+                        apoios.add(a);
+                    }
+                }
+                for (ManutencaoEnsino m : ptd.getManutencoesEnsino()) {
+                    if (!manutencoes.contains(m)) {
+                        m.setHorariosManutecao(filtrarDuplicacoesHorario(m.getHorariosManutecao()));
+                        manutencoes.add(m);
+                    }
+                }
+                for (Administracao a : ptd.getAdministrativas()) {
+                    if (!administrativas.contains(a)) {
+                        a.setHorariosAdministracao(filtrarDuplicacoesHorario(a.getHorariosAdministracao()));
+                        administrativas.add(a);
+                    }
+                }
+                for (Participacao p : ptd.getParticipacoes()) {
+                    if (!participacoes.contains(p)) {
+                        p.setHorariosParticipacao(filtrarDuplicacoesHorario(p.getHorariosParticipacao()));
+                        participacoes.add(p);
+                    }
+                }
+                for (AtividadeASerProposta a : ptd.getAtividadesASeremPropostas()) {
+                    if (!atvPropostas.contains(a)) {
+                        a.setHorariosAtividadesASerProposta(filtrarDuplicacoesHorario(a.getHorariosAtividadesASerProposta()));
+                        atvPropostas.add(a);
+                    }
+                }
+                for (OutroTipoAtividade o : ptd.getOutrosTiposAtividades()) {
+                    if (!outras.contains(o)) {
+                        o.setHorariosOutroTipoAtividade(filtrarDuplicacoesHorario(o.getHorariosOutroTipoAtividade()));
+                        outras.add(o);
+                    }
+                }
+                ptd.setAulas(aulas);
+                ptd.setApoios(apoios);
+                ptd.setManutencoesEnsino(manutencoes);
+                ptd.setAdministrativas(administrativas);
+                ptd.setParticipacoes(participacoes);
+                ptd.setAtividadesASeremPropostas(atvPropostas);
+                ptd.setOutrosTiposAtividades(outras);
+                ptdsFiltrados.add(ptd);                
+            }
+
+        }
+
+        return ptdsFiltrados;
+    }
+
+    private List<Horario> filtrarDuplicacoesHorario(List<Horario> horarios) {
+        List<Horario> horariosFiltrados = new ArrayList<>();
+        for (Horario h : horarios) {
+            if (!horariosFiltrados.contains(h)) {
+                horariosFiltrados.add(h);
+            }
+        }
+        return horariosFiltrados;
+    }
+
 }

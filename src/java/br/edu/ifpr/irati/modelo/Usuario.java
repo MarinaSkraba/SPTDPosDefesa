@@ -11,9 +11,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Proxy;
 
 @Entity(name = "usuario")
 @Inheritance(strategy = InheritanceType.JOINED)
+@Proxy(lazy = false)
 public class Usuario implements Serializable {
 
     @Id

@@ -7,16 +7,14 @@ import br.edu.ifpr.irati.modelo.Horario;
 import br.edu.ifpr.irati.modelo.PTD;
 import br.edu.ifpr.irati.modelo.TipoAdministracao;
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class AdministracaoMB {
+public class AdministracaoMB implements Serializable{
 
     private Administracao administracao;
     private Administracao administracaoSelecionadaParaAdministracao;
@@ -58,20 +56,9 @@ public class AdministracaoMB {
     }
 
     public String excluirAdministracao(Administracao administracao, PTD ptd) {
-        Dao<Administracao> administracaoDAO = new GenericDAO<>(Administracao.class);
-        Dao<Horario> horarioDAO = new GenericDAO<>(Horario.class);
-        Dao<TipoAdministracao> tipoAdministracaoDAO = new GenericDAO<>(TipoAdministracao.class);
-        Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
-        List<Horario> aux = new ArrayList<>(administracao.getHorariosAdministracao());
-        for (Horario h : aux) {
-            administracao.getHorariosAdministracao().remove(h);
-            administracaoDAO.alterar(administracao);
-            horarioDAO.excluir(h);
-        }
+        Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);        
         ptd.getAdministrativas().remove(administracao);
         ptdDAO.alterar(ptd);
-        administracaoDAO.excluir(administracao);
-        tipoAdministracaoDAO.excluir(administracao.getTipoAdministracao());
         return "CriarCorrigirPTD?faces-redirect=true";
     }
 

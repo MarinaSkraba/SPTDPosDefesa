@@ -6,8 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import org.hibernate.annotations.Proxy;
 
 @Entity(name = "tipoadministracao")
+@Proxy(lazy = false)
 public class TipoAdministracao implements Serializable {
 
     @Id

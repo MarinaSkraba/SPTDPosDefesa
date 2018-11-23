@@ -3,6 +3,7 @@ package br.edu.ifpr.irati.modelo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,8 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import org.hibernate.annotations.Proxy;
 
 @Entity(name = "outrotipoatividade")
+@Proxy(lazy = false)
 public class OutroTipoAtividade implements Serializable {
 
     @Id
@@ -27,7 +30,7 @@ public class OutroTipoAtividade implements Serializable {
     @Column(name = "cargaHorariaSemanalOutroTipoAtividade", nullable = false)
     private double cargaHorariaSemanalOutroTipoAtividade;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Horario> horariosOutroTipoAtividade;
 
     public OutroTipoAtividade() {
@@ -94,4 +97,15 @@ public class OutroTipoAtividade implements Serializable {
         this.cargaHorariaSemanalOutroTipoAtividade = cargaHorariaSemanalOutroTipoAtividade;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this.idOutroTipoAtividade == ((OutroTipoAtividade) obj).idOutroTipoAtividade){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    
+    
 }

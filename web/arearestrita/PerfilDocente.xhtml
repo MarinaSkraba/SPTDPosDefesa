@@ -2,10 +2,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Perfil</title>
-        <link rel="stylesheet" type="text/css" href="css/css.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/css.css"/>
         <h:outputStylesheet name="webjars/font-awesome/4.4.0/css/font-awesome.css"/>
     </h:head>
 
@@ -55,7 +56,7 @@
                                  iconPos="right"
                                  icon="/img/Search/searchLarger_24.png"
                                  value="Voltar"
-                                 action="#{pTDMB.abrirNotificacoesDiretorEnsino(usuarioMB.usuarioLogado.idUsuario)}"
+                                 action="#{pTDMB.abrirNotificacoesDocente(usuarioMB.usuarioLogado.idUsuario)}"
                                  ajax="false"
                                  style="float: left;"/>
 
@@ -80,7 +81,7 @@
                                      actionListener="#{usuarioMB.realizarLogout()}"
                                      action="/Login?faces-redirect=true"/>
                 </p:overlayPanel>
-                
+
                 <h:outputText value="#{usuarioMB.usuarioLogado.nomeCompleto}" 
                               styleClass="text01"
                               style="color: white; float: right; font-weight: normal; font-size: large;"/>
@@ -111,25 +112,84 @@
                             <h:outputText value="Nome completo: "
                                           styleClass="text01"
                                           style="font-size: large; float: right; font-weight: bold;"/>
-                            <h:outputText value="#{diretorEnsinoMB.diretorEnsinoSelecionado.nomeCompleto}"
+                            <h:outputText value="#{professorMB.professorSelecionado.nomeCompleto}"
                                           styleClass="text01"
                                           style="font-size: large; float: right;"/>
                             <h:outputText value="Email: "
                                           styleClass="text01"
                                           style="font-size: large; float: right; font-weight: bold;"/>
-                            <h:outputText value="#{diretorEnsinoMB.diretorEnsinoSelecionado.email}"
+                            <h:outputText value="#{professorMB.professorSelecionado.email}"
                                           styleClass="text01"
                                           style="font-size: large; float: right;"/>
                         </h:panelGrid>
+                        <br/>
+                        <h:outputText value="Perfil Docente" 
+                                      styleClass="text01" />
+                        <hr size="1px" style="color: #1785ad; width: 90%; opacity: 0.5; margin: 0; float: bottom;"/>
+                        <br/>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Matrícula SIAPE: "
+                                          styleClass="text01"
+                                          style="font-size: large; float: right; font-weight: bold;"/>
+                            <h:outputText value="#{professorMB.professorSelecionado.matriculaSIAPE}"
+                                          styleClass="text01"
+                                          style="font-size: large; float: right;"/>
+                            <h:outputText value="Regime de trabalho: "
+                                          styleClass="text01"
+                                          style="font-size: large; float: right; font-weight: bold;"/>
+                            <h:outputText value="#{professorMB.professorSelecionado.regimeTrabalho}"
+                                          styleClass="text01"
+                                          style="font-size: large; float: right;"/>
+                            <h:outputText value="Tipo de contrato: "
+                                          styleClass="text01"
+                                          style="font-size: large; float: right; font-weight: bold;"/>
+                            <h:outputText value="#{professorMB.professorSelecionado.tipoContrato}"
+                                          styleClass="text01"
+                                          style="font-size: large; float: right;"/>
+                            <h:outputText value="Data de contratação: "
+                                          styleClass="text01"
+                                          style="font-size: large; float: right; font-weight: bold;"/>
+                            <h:outputText value="#{professorMB.professorSelecionado.dataContratacao}"
+                                          styleClass="text01"
+                                          style="font-size: large; float: right;">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </h:panelGrid>
+                        <br/>
 
                         <p:commandButton styleClass="botaoAzul" 
-                                         style="border-radius: 30px; font-size: large; margin-left: 10px;" 
+                                         style="border-radius: 30px; font-size: large; margin: 10px;" 
                                          value="Editar Informações"
                                          ajax="false"
-                                         action="/EditarPerfilDiretorEnsino"/>
+                                         action="/EditarPerfilDocente"/>
+                        <p:commandButton styleClass="botaoVermelho" 
+                                         style="border-radius: 30px; font-size: large; margin: 10px;" 
+                                         value="Desativar conta"
+                                         onclick="PF('confirmarDesabilitacaoDocenteDialog').show();"/>
 
                     </div>
                 </center>
+
+                <!-- Caixa de confirmação de desabilitação da conta -->
+                <p:dialog header="Confirmar cadastro" 
+                          widgetVar="confirmarDesabilitacaoDocenteDialog" 
+                          modal="true" 
+                          showEffect="fade" 
+                          hideEffect="fade" 
+                          resizable="false">
+
+                    <h:outputText value="Você realmente deseja desativar sua conta? Ao desativar sua conta você poderá ativá-la realizando uma tentativa de login, assim será enviada uma solicitação para o diretor de ensino que poderá habilitar sua conta novamente." 
+                                  styleClass="text01"
+                                  style="margin: 10px; font-size: large; width: 400px;"/>
+                    <br/>
+
+                    <p:commandButton styleClass="botaoVermelho" 
+                                     value="Confirmar"
+                                     ajax="false"
+                                     actionListener="#{professorMB.desabilitarProfessor(professorMB.professorSelecionado)}"
+                                     action="/Login?faces-redirect=true"/>
+
+                </p:dialog>
 
             </h:form>
 

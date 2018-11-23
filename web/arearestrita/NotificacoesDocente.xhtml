@@ -6,7 +6,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Tela Inicial</title>
-        <link rel="stylesheet" type="text/css" href="css/css.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/css.css"/>
         <h:outputStylesheet name="webjars/font-awesome/4.4.0/css/font-awesome.css"/>
     </h:head>
     <h:body styleClass="body">
@@ -47,14 +47,14 @@
                                      style="margin: 0px;"
                                      ajax="false" 
                                      actionListener="#{professorMB.setProfessorSelecionado(usuarioMB.usuarioLogado)}"
-                                     action="/PerfilDocente?faces-redirect=true"/>
+                                     action="/arearestrita/PerfilDocente?faces-redirect=true"/>
                     <br/>                     
                     <p:commandButton value="Legislação"
                                      styleClass="opMenu"
                                      style="margin: 5px 0px;"
                                      ajax="false" 
                                      actionListener="#{professorMB.setProfessor(usuarioMB.usuarioLogado)}"
-                                     action="/legislacao?faces-redirect=true"/>
+                                     action="/arearestrita/legislacao?faces-redirect=true"/>
                     <br/>
                     <p:commandButton value="Sair"
                                      styleClass="opVermelhaMenu"
@@ -70,12 +70,49 @@
                               style="color: white; float: right; font-weight: normal; font-size: large;"/>
 
                 <p:commandButton id="addPTD"
-                                 value="PTD em branco"
                                  styleClass="opMenu"
-                                 ajax="false" 
-                                 action="#{pTDMB.abrirCriarCorrigirPTDEmBranco(usuarioMB.usuarioLogado)}"/>
+                                 icon="/img/Search/searchLarger_24.png"
+                                 value="Editar PTD"/>
+
+                <!-- Caixa de "novo" PTD -->
+                <p:overlayPanel id="addPanel" 
+                                for="addPTD" 
+                                hideEffect="fade" 
+                                style="padding: 0px;">
+                    <p:commandButton value="PTD em branco"
+                                     styleClass="opMenu"
+                                     onclick="PF('confirmarCriacaoPTDEmBrancoDialog').show();"/>
+                    <br/>
+                    <p:commandButton value="Recuperar último"
+                                     styleClass="opMenu"
+                                     ajax="false" 
+                                     action="#{pTDMB.abrirCriarCorrigirPTDAPartirDoUltimoArquivado(usuarioMB.usuarioLogado)}"/>
+                    <br/>
+                    <p:commandButton value="Continuar editando"
+                                     styleClass="opMenu"
+                                     ajax="false" 
+                                     action="#{pTDMB.abrirCriarCorrigirPTDContinuarEdicao(usuarioMB.usuarioLogado)}"/>
+                </p:overlayPanel>
                 
-                
+                <!-- Caixa de aviso de substituição de PTD -->
+                <p:dialog header="Confirmar criação" 
+                          widgetVar="confirmarCriacaoPTDEmBrancoDialog" 
+                          modal="true" 
+                          showEffect="fade" 
+                          hideEffect="fade" 
+                          resizable="false">
+
+                    <h:outputText value="Ao criar um PTD em branco, você substitui qualquer outro que estava em edição." 
+                                  styleClass="text01"
+                                  style="margin: 10px 25px -10px 25px; font-size: large; width: 400px;"/>
+                    <br/>
+
+                    <p:commandButton styleClass="botaoAzul" 
+                                     value="Estou ciente."
+                                     ajax="false" 
+                                     action="#{pTDMB.abrirCriarCorrigirPTDEmBranco(usuarioMB.usuarioLogado)}"/>
+
+                </p:dialog>
 
                 <p:commandButton styleClass="opMenu"
                                  icon="/img/Search/searchLarger_24.png"

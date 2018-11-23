@@ -2,15 +2,10 @@ package br.edu.ifpr.irati.mb;
 
 import br.edu.ifpr.irati.dao.Dao;
 import br.edu.ifpr.irati.dao.GenericDAO;
-import br.edu.ifpr.irati.modelo.Administracao;
-import br.edu.ifpr.irati.modelo.Apoio;
-import br.edu.ifpr.irati.modelo.AtividadeASerProposta;
-import br.edu.ifpr.irati.modelo.Aula;
 import br.edu.ifpr.irati.modelo.DiretorEnsino;
-import br.edu.ifpr.irati.modelo.ManutencaoEnsino;
-import br.edu.ifpr.irati.modelo.OutroTipoAtividade;
 import br.edu.ifpr.irati.modelo.PTD;
 import br.edu.ifpr.irati.modelo.Participacao;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +14,7 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class PTDAvaliacaoMB {
+public class PTDAvaliacaoMB implements Serializable{
 
     private PTD ptdEmAvaliacao;
     private List<String> irregularidadesPTDAvaliacao;
@@ -292,7 +287,7 @@ public class PTDAvaliacaoMB {
      * @return the participacoesColabPTDAvaliacao
      */
     public List<Participacao> getParticipacoesColabPTDAvaliacao() {
-        atualizarListasParticipacoesPTDAvaliacao();
+        //atualizarListasParticipacoesPTDAvaliacao();
         return participacoesColabPTDAvaliacao;
     }
 

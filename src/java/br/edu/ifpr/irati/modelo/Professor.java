@@ -11,9 +11,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Proxy;
 
 @Entity(name = "professor")
 @PrimaryKeyJoinColumn(name = "idUsuario")
+@Proxy(lazy = false)
 public class Professor extends Usuario implements Serializable {
 
     @Column(name = "matriculaSIAPE", nullable = false, length = 15)

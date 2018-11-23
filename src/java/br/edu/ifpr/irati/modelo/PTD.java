@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,8 +16,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Proxy;
 
 @Entity(name = "ptd")
+@Proxy(lazy = false)
 public class PTD implements Serializable {
 
     @Id
@@ -93,25 +97,25 @@ public class PTD implements Serializable {
     @JoinColumn(name = "professor_idUsuario")
     private Professor professor;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Aula> aulas;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Apoio> apoios;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<ManutencaoEnsino> manutencoesEnsino;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Administracao> administrativas;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Participacao> participacoes;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<AtividadeASerProposta> atividadesASeremPropostas;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<OutroTipoAtividade> outrosTiposAtividades;
 
     public PTD() {
@@ -476,4 +480,15 @@ public class PTD implements Serializable {
         this.cargaHorariaTotal = cargaHorariaTotal;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this.idPTD == ((PTD) obj).idPTD){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    
+    
 }

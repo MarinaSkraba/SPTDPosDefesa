@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Facelet Title</title>
-        <link rel="stylesheet" type="text/css" href="css/css.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/css.css"/>
         <h:outputStylesheet name="webjars/font-awesome/4.4.0/css/font-awesome.css"/>
     </h:head>
     <h:body styleClass="body">
@@ -23,13 +23,13 @@
 
                 <p:commandButton styleClass="opMenu"
                                  iconPos="right"
-                                 icon="/img/Search/searchLarger_24.png"
+                                 icon="../img/Search/searchLarger_24.png"
                                  value="Notificações"
                                  action="#{usuarioMB.sairTelaLegislacao(usuarioMB.usuarioLogado)}"
                                  style="float: left;"/>
 
                 <p:commandButton id="logout"
-                                 image="img/fundo_login.png" 
+                                 image="../img/fundo_login.png" 
                                  styleClass="imgLogado"/>
 
                 <!-- Informações e Logout -->

@@ -13,7 +13,7 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class AtividadeASerPropostaMB {
+public class AtividadeASerPropostaMB implements Serializable{
 
     private AtividadeASerProposta atividadeASerPropostaSelecionadaParaAtividadeASerProposta;
     private AtividadeASerProposta atividadeASerPropostaSelecionadaParaHorario;
@@ -58,21 +58,9 @@ public class AtividadeASerPropostaMB {
     }
 
     public String excluirAtividadeASerProposta(AtividadeASerProposta atividadeASerProposta, PTD ptd) {
-        Dao<AtividadeASerProposta> atividadeASerPropostaDAO = new GenericDAO<>(AtividadeASerProposta.class);
-        Dao<Horario> horarioDAO = new GenericDAO<>(Horario.class);
-        Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
-
-        List<Horario> aux = new ArrayList<>(atividadeASerProposta.getHorariosAtividadesASerProposta());
-        for (Horario h : aux) {
-            atividadeASerProposta.getHorariosAtividadesASerProposta().remove(h);
-            atividadeASerPropostaDAO.alterar(atividadeASerProposta);
-            horarioDAO.excluir(h);
-        }
-
+        Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);      
         ptd.getAtividadesASeremPropostas().remove(atividadeASerProposta);
         ptdDAO.alterar(ptd);
-        atividadeASerPropostaDAO.excluir(atividadeASerProposta);
-
         return "CriarCorrigirPTD?faces-redirect=true";
     }
 

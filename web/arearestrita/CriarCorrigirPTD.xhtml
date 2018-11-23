@@ -7,7 +7,7 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core">
     <h:head>
         <title>Edição de PTDs</title>
-        <link rel="stylesheet" type="text/css" href="css/css.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/css.css"/>
         <h:outputStylesheet name="webjars/font-awesome/4.4.0/css/font-awesome.css"/>
     </h:head>
 
@@ -111,16 +111,17 @@
                               hideEffect="fade" 
                               resizable="false">
 
-                        <h:outputText value="Ao sair as informações preenchidas são descartadas. Deseja mesmo sair?" 
+                        <h:outputText value="Deseja manter as informações inseridas nesse documento?" 
                                       styleClass="text01"
                                       style="font-size: large; width: 400px;"/>
                         <p:commandButton styleClass="botaoCinza" 
-                                         value="Manter e ficar" 
-                                         ajax="false"/>
+                                         value="Manter e sair" 
+                                         ajax="false" 
+                                         action="#{usuarioMB.realizarLogout()}"/>
 
                         <p:commandButton value="Descartar e sair" 
                                          ajax="false" 
-                                         action="#{pTDMB.cancelarPTD(pTDMB.ptd, usuarioMB.usuarioLogado.idUsuario, 'notificaçoes')}"
+                                         action="#{pTDMB.cancelarPTD(pTDMB.ptd, usuarioMB.usuarioLogado.idUsuario, 'notificaçoes',usuarioMB)}"
                                          styleClass="botaoVermelho"/>
 
                     </p:dialog>
@@ -133,17 +134,20 @@
                               hideEffect="fade" 
                               resizable="false">
 
-                        <h:outputText value="Ao sair as informações preenchidas são descartadas. Deseja mesmo sair?" 
+                        <h:outputText value="Deseja manter as informações inseridas nesse documento?" 
                                       styleClass="text01"
                                       style="font-size: large; width: 400px;"/>
                         <p:commandButton styleClass="botaoCinza" 
-                                         value="Manter e ficar" 
-                                         ajax="false" />
+                                         value="Manter e sair" 
+                                         ajax="false" 
+                                         immediate="true"
+                                         actionListener="#{usuarioMB.realizarLogout()}"
+                                         action="/Login?faces-redirect=true"/>
 
                         <p:commandButton value="Descartar e sair" 
                                          ajax="false"
                                          actionListener="#{usuarioMB.realizarLogout()}"
-                                         action="#{pTDMB.cancelarPTD(pTDMB.ptd, usuarioMB.usuarioLogado.idUsuario, 'login')}"
+                                         action="#{pTDMB.cancelarPTD(pTDMB.ptd, usuarioMB.usuarioLogado.idUsuario, 'login',usuarioMB)}"
                                          styleClass="botaoVermelho"/>
 
                     </p:dialog>
@@ -4361,6 +4365,8 @@
             </div>
 
         </div>
+
+
     </h:body>
 
 </html>

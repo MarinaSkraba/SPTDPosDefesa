@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.edu.ifpr.irati.mb;
 
 import br.edu.ifpr.irati.dao.Dao;
@@ -20,7 +15,7 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class AulaMB {
+public class AulaMB implements Serializable{
 
     private Aula aula;
     private Aula aulaSelecionadaParaAula;
@@ -88,21 +83,9 @@ public class AulaMB {
     }
 
     public String excluirAula(Aula aula, PTD ptd) {
-        Dao<Aula> aulaDAO = new GenericDAO<>(Aula.class);
-        Dao<TipoOferta> tipoOfertaDAO = new GenericDAO<>(TipoOferta.class);
-        Dao<Horario> horarioDAO = new GenericDAO<>(Horario.class);
-        Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
-
-        List<Horario> aux = new ArrayList<>(aula.getHorariosAula());
-        for (Horario h : aux) {
-            aula.getHorariosAula().remove(h);
-            aulaDAO.alterar(aula);
-            horarioDAO.excluir(h);
-        }
+        Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);    
         ptd.getAulas().remove(aula);
         ptdDAO.alterar(ptd);
-        aulaDAO.excluir(aula);
-
         return "CriarCorrigirPTD?faces-redirect=true";
     }
 

@@ -3,13 +3,14 @@ package br.edu.ifpr.irati.mb;
 import br.edu.ifpr.irati.dao.Dao;
 import br.edu.ifpr.irati.dao.GenericDAO;
 import br.edu.ifpr.irati.modelo.TipoOferta;
+import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class TipoOfertaMB {
+public class TipoOfertaMB implements Serializable{
 
     private TipoOferta tipoOferta;
     private List<TipoOferta> tiposOferta;

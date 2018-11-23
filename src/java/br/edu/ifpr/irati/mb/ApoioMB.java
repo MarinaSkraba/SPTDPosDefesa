@@ -19,7 +19,7 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class ApoioMB {
+public class ApoioMB implements Serializable{
 
     private Apoio apoio;
     private Apoio apoioSelecionadoParaApoio;
@@ -66,23 +66,9 @@ public class ApoioMB {
     }
 
     public String excluirApoio(Apoio apoio, PTD ptd) {
-
-        Dao<Apoio> apoioDAO = new GenericDAO<>(Apoio.class);
-        Dao<TipoApoio> tipoApoioDAO = new GenericDAO<>(TipoApoio.class);
-        Dao<Horario> horarioDAO = new GenericDAO<>(Horario.class);
         Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
-
-        List<Horario> aux = new ArrayList<>(apoio.getHorariosApoio());
-        for (Horario h : aux) {
-            apoio.getHorariosApoio().remove(h);
-            apoioDAO.alterar(apoio);
-            horarioDAO.excluir(h);
-        }
         ptd.getApoios().remove(apoio);
         ptdDAO.alterar(ptd);
-        apoioDAO.excluir(apoio);
-        tipoApoioDAO.excluir(apoio.getTipoApoio());
-
         return "CriarCorrigirPTD?faces-redirect=true";
     }
 

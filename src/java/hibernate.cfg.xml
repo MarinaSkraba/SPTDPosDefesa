@@ -1,77 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-    <session-factory>
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sptd</property>
-        <property name="hibernate.hbm2ddl.auto">update</property>
-        <property name="hibernate.enable_lazy_load_no_trans">true</property>
-        <!-- para criar as tabelas sempre que executar pode ser usado o valor create - para apenas atualizar usa-se update -->
-        <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.format_sql">true</property>
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password"></property>     
-        <mapping class="br.edu.ifpr.irati.modelo.Usuario"/>
-        <mapping class="br.edu.ifpr.irati.modelo.Horario"/>
-        <mapping class="br.edu.ifpr.irati.modelo.TipoManutencao"/>
-        <mapping class="br.edu.ifpr.irati.modelo.TipoApoio"/>
-        <mapping class="br.edu.ifpr.irati.modelo.TipoProjetoEnsino"/>      
-        <mapping class="br.edu.ifpr.irati.modelo.TipoOferta"/>
-        <mapping class="br.edu.ifpr.irati.modelo.TipoAdministracao"/>
-        <mapping class="br.edu.ifpr.irati.modelo.Administracao"/>
-        <mapping class="br.edu.ifpr.irati.modelo.Apoio"/>
-        <mapping class="br.edu.ifpr.irati.modelo.AtividadeASerProposta"/>
-        <mapping class="br.edu.ifpr.irati.modelo.ManutencaoEnsino"/>
-        <mapping class="br.edu.ifpr.irati.modelo.OutroTipoAtividade"/>
-        <mapping class="br.edu.ifpr.irati.modelo.ProjetoEnsino"/>
-        <mapping class="br.edu.ifpr.irati.modelo.ProjetoPesquisaExtensao"/>
-        <mapping class="br.edu.ifpr.irati.modelo.Participacao"/>        
-        <mapping class="br.edu.ifpr.irati.modelo.Professor"/>   
-        <mapping class="br.edu.ifpr.irati.modelo.PTD"/>   
-        <mapping class="br.edu.ifpr.irati.modelo.DiretorEnsino"/>
-        <mapping class="br.edu.ifpr.irati.modelo.Aula"/>  
-        <mapping class="br.edu.ifpr.irati.modelo.Curso"/>  
-          
-          
-        
-        
-        
-        
-        
-       
-       
-        
-        
-        
-        
-        
-        
-        
-        
-        
-       
-       
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-       
-        
-        
-        
-        
-
-        
-        
-         
-        
-    
-    </session-factory>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sptd</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="hibernate.enable_lazy_load_no_trans">true</property>
+    <!-- para criar as tabelas sempre que executar pode ser usado o valor create - para apenas atualizar usa-se update -->
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">true</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">root</property>
+    <mapping class="br.edu.ifpr.irati.modelo.Usuario"/>
+    <mapping class="br.edu.ifpr.irati.modelo.Horario"/>
+    <mapping class="br.edu.ifpr.irati.modelo.TipoManutencao"/>
+    <mapping class="br.edu.ifpr.irati.modelo.TipoApoio"/>
+    <mapping class="br.edu.ifpr.irati.modelo.TipoProjetoEnsino"/>
+    <mapping class="br.edu.ifpr.irati.modelo.TipoOferta"/>
+    <mapping class="br.edu.ifpr.irati.modelo.TipoAdministracao"/>
+    <mapping class="br.edu.ifpr.irati.modelo.Administracao"/>
+    <mapping class="br.edu.ifpr.irati.modelo.Apoio"/>
+    <mapping class="br.edu.ifpr.irati.modelo.AtividadeASerProposta"/>
+    <mapping class="br.edu.ifpr.irati.modelo.ManutencaoEnsino"/>
+    <mapping class="br.edu.ifpr.irati.modelo.OutroTipoAtividade"/>
+    <mapping class="br.edu.ifpr.irati.modelo.ProjetoEnsino"/>
+    <mapping class="br.edu.ifpr.irati.modelo.ProjetoPesquisaExtensao"/>
+    <mapping class="br.edu.ifpr.irati.modelo.Participacao"/>
+    <mapping class="br.edu.ifpr.irati.modelo.Professor"/>
+    <mapping class="br.edu.ifpr.irati.modelo.PTD"/>
+    <mapping class="br.edu.ifpr.irati.modelo.DiretorEnsino"/>
+    <mapping class="br.edu.ifpr.irati.modelo.Aula"/>
+    <mapping class="br.edu.ifpr.irati.modelo.Curso"/>
+  </session-factory>
 </hibernate-configuration>

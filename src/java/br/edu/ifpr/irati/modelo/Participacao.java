@@ -3,6 +3,7 @@ package br.edu.ifpr.irati.modelo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,8 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import org.hibernate.annotations.Proxy;
 
 @Entity(name = "participacao")
+@Proxy(lazy = false)
 public class Participacao implements Serializable {
 
     @Id
@@ -37,7 +40,7 @@ public class Participacao implements Serializable {
     @JoinColumn(name = "projetopesquisaextensao_idProjetoPesquisaExtensao")
     private ProjetoPesquisaExtensao projetoPesquisaExtensao;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
     private List<Horario> horariosParticipacao;
 
     public Participacao() {
@@ -143,4 +146,15 @@ public class Participacao implements Serializable {
     public void setProjetoPesquisaExtensao(ProjetoPesquisaExtensao projetoPesquisaExtensao) {
         this.projetoPesquisaExtensao = projetoPesquisaExtensao;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.idParticipacao == ((Participacao) obj).idParticipacao){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    
 }

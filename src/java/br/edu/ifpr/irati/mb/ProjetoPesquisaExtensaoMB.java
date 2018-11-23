@@ -18,7 +18,7 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean(name = "projetoPesquisaExtensaoMB")
 @SessionScoped
-public class ProjetoPesquisaExtensaoMB {
+public class ProjetoPesquisaExtensaoMB implements Serializable{
 
     private Participacao participacaoAutorSelecionadoParaParticipacaoAutor;
     private Participacao participacaoAutorSelecionadoParaHorario;
@@ -49,21 +49,19 @@ public class ProjetoPesquisaExtensaoMB {
         Dao<Participacao> participacaoDAO = new GenericDAO<>(Participacao.class);
         Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
         projetoAutorNovo.setEstadoProjetoPesquisaExtensao("Ativo");
+        projetoExtensaoDAO.salvar(projetoAutorNovo);
+                          
         participacaoAutor.setProjetoPesquisaExtensao(projetoAutorNovo);
-        projetoExtensaoDAO.salvar(participacaoAutor.getProjetoPesquisaExtensao());
-        List<ProjetoPesquisaExtensao> p = projetoExtensaoDAO.buscarTodos(ProjetoPesquisaExtensao.class);
-        participacaoAutor.setProjetoPesquisaExtensao(p.get(p.size() - 1));
         participacaoAutor.setRotulo("Autor");
         participacaoAutor.setEstadoParticipacao("Ativo");
         participacaoAutor.setProfessor(professorAutor);
-        participacaoDAO.salvar(participacaoAutor);
-        List<Participacao> pAux = participacaoDAO.buscarTodos(Participacao.class);
-        participacaoAutor = pAux.get(pAux.size() - 1);
-        projetoExtensaoDAO.alterar(participacaoAutor.getProjetoPesquisaExtensao());
+        participacaoDAO.salvar(participacaoAutor);        
+                        
         ptd.getParticipacoes().add(participacaoAutor);
         ptdDAO.alterar(ptd);
         participacaoAutor = new Participacao();
         projetoAutorNovo = new ProjetoPesquisaExtensao();
+        
         return "CriarCorrigirPTD?faces-redirect=true";
 
     }
@@ -77,8 +75,6 @@ public class ProjetoPesquisaExtensaoMB {
         participacaoAutor.setProfessor(professorAutor);
         participacaoAutor.setEstadoParticipacao("Ativo");
         participacaoDAO.salvar(participacaoAutor);
-        List<Participacao> p = participacaoDAO.buscarTodos(Participacao.class);
-        participacaoAutor = p.get(p.size() - 1);
         projetoExtensaoDAO.alterar(participacaoAutor.getProjetoPesquisaExtensao());
         ptd.getParticipacoes().add(participacaoAutor);
         ptdDAO.alterar(ptd);
@@ -96,8 +92,6 @@ public class ProjetoPesquisaExtensaoMB {
         participacaoColab.setProfessor(professorColaborador);
         participacaoColab.setEstadoParticipacao("Ativo");
         participacaoDAO.salvar(participacaoColab);
-        List<Participacao> p = participacaoDAO.buscarTodos(Participacao.class);
-        participacaoColab = p.get(p.size() - 1);
         projetoExtensaoDAO.alterar(participacaoColab.getProjetoPesquisaExtensao());
         ptd.getParticipacoes().add(participacaoColab);
         ptdDAO.alterar(ptd);
@@ -132,11 +126,9 @@ public class ProjetoPesquisaExtensaoMB {
     }
 
     public String excluirParticipacaoPesquisaExtensao(Participacao participacao, PTD ptd) {
-        Dao<Participacao> participacaoDAO = new GenericDAO<>(Participacao.class);
         Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
         ptd.getParticipacoes().remove(participacao);
         ptdDAO.alterar(ptd);
-        participacaoDAO.excluir(participacao);
         return "CriarCorrigirPTD?faces-redirect=true";
     }
 

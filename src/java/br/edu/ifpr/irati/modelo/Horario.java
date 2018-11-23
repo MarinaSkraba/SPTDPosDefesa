@@ -12,8 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Proxy;
 
 @Entity(name = "horario")
+@Proxy(lazy = false)
 public class Horario implements Serializable {
 
     @Id
@@ -53,11 +55,24 @@ public class Horario implements Serializable {
         this.professor = professor;
     }
 
-    public int calcularCargaHoraria() {
+    public double calcularCargaHoraria() {
 
-        return 0;
-        // rever isso
+        double minInicio = this.getHoraInicio().getMinutes();
+        double minTermino = this.getHoraTermino().getMinutes();
+        double hInicio = this.getHoraInicio().getHours();
+        double hTermino = this.getHoraTermino().getHours();
 
+        double cargaHoraNovoHorario = hTermino - hInicio;
+        if (minTermino > minInicio) {
+            double minTotal = minTermino - minInicio;
+            cargaHoraNovoHorario = cargaHoraNovoHorario + (minTotal / 60);
+        }
+        if (minTermino < minInicio) {
+            double minTotal = (60 - minInicio) + minTermino;
+            cargaHoraNovoHorario = (cargaHoraNovoHorario + (minTotal / 60)) - 1;
+        }
+        
+        return cargaHoraNovoHorario;
     }
 
     public int getIdHorario() {
@@ -107,4 +122,15 @@ public class Horario implements Serializable {
     public void setEstadoHorario(String estadoHorario) {
         this.estadoHorario = estadoHorario;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.idHorario == ((Horario) obj).idHorario){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    
 }

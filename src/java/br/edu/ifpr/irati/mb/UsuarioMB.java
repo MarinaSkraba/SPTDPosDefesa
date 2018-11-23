@@ -14,7 +14,7 @@ import br.edu.ifpr.irati.modelo.Professor;
 import br.edu.ifpr.irati.modelo.Usuario;
 import br.edu.ifpr.irati.util.Digest;
 import br.edu.ifpr.irati.util.HashGenerationException;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -22,10 +22,11 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class UsuarioMB {
+public class UsuarioMB implements Serializable{
 
     private Usuario usuario;
     private Usuario usuarioLogado;
+    private boolean logado = false;
 
     public UsuarioMB() {
         usuarioLogado = new Usuario();
@@ -75,10 +76,11 @@ public class UsuarioMB {
                 setUsuarioLogado(usuario);
                 System.out.println("Chegou object");
                 System.out.println(getUsuarioLogado());
+                logado = true;
                 if (getUsuarioLogado() instanceof Professor) {
-                    return "/NotificacoesDocente?faces-redirect=true";
+                    return "/arearestrita/NotificacoesDocente?faces-redirect=true";
                 } else {
-                    return "/NotificacoesDiretorEnsino?faces-redirect=true";
+                    return "/arearestrita/NotificacoesDiretorEnsino?faces-redirect=true";
                 }
             } else {
                 Dao<Usuario> usuarioDAOGenerico = new GenericDAO<>(Usuario.class);
@@ -93,13 +95,14 @@ public class UsuarioMB {
     public void realizarLogout() {
         usuario = new Usuario();
         usuarioLogado = new Usuario();
+        logado = false;
     }
 
     public String sairTelaLegislacao(Usuario usuario) {
         if (usuario instanceof Professor) {
-            return "NotificacoesDocente";
+            return "/arearestrita/NotificacoesDocente";
         } else {
-            return "NotificacoesDiretorEnsino";
+            return "/arearestrita/NotificacoesDiretorEnsino";
         }
     }
 
@@ -123,6 +126,13 @@ public class UsuarioMB {
      */
     public void setUsuarioLogado(Usuario usuarioLogado) {
         this.usuarioLogado = usuarioLogado;
+    }
+
+    /**
+     * @return the logado
+     */
+    public boolean isLogado() {
+        return logado;
     }
 
 }

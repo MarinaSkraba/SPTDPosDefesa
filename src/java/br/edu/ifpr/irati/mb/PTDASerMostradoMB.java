@@ -12,6 +12,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -22,7 +23,7 @@ import org.primefaces.component.export.PDFOptions;
 
 @ManagedBean
 @SessionScoped
-public class PTDASerMostradoMB {
+public class PTDASerMostradoMB implements Serializable{
 
     private List<PTD> ptdsResultadoBusca;
     private String textoBusca;
