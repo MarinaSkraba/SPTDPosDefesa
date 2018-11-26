@@ -7,6 +7,7 @@ import br.edu.ifpr.irati.modelo.PTD;
 import br.edu.ifpr.irati.modelo.Usuario;
 import br.edu.ifpr.irati.util.Digest;
 import br.edu.ifpr.irati.util.HashGenerationException;
+import br.edu.ifpr.irati.util.mail.MensagensEmail;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -126,6 +127,20 @@ public class DiretorEnsinoMB implements Serializable{
         Dao<PTD> ptdSubmetidoDAO = new GenericDAO<>(PTD.class);
         ptd.setEstadoPTD("Aprovado");
         ptdSubmetidoDAO.alterar(ptd);
+        
+         /* Mensagem a ser encaminhada na aprovação de um PTD */
+        StringBuilder sb = new StringBuilder();
+        sb.append("<p>");
+        sb.append("Olá!");
+        sb.append("</p>");
+        sb.append("<p>");
+        sb.append("O Diretor de Ensino aprovou um de seus PTDs ");
+        sb.append("</p>");
+        
+        MensagensEmail menssagemEmail = new MensagensEmail();
+        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino", 
+                ptd.getProfessor().getEmail(), 
+                "PTD Aprovado", sb.toString());
 
     }
 
@@ -134,6 +149,20 @@ public class DiretorEnsinoMB implements Serializable{
         Dao<PTD> ptdSubmetidoDAO = new GenericDAO<>(PTD.class);
         ptd.setEstadoPTD("Reprovado");
         ptdSubmetidoDAO.alterar(ptd);
+        
+          /* Mensagem a ser encaminhada na aprovação de um PTD */
+        StringBuilder sb = new StringBuilder();
+        sb.append("<p>");
+        sb.append("Olá!");
+        sb.append("</p>");
+        sb.append("<p>");
+        sb.append("O Diretor de Ensino aprovou um de seus PTDs ");
+        sb.append("</p>");
+        
+        MensagensEmail menssagemEmail = new MensagensEmail();
+        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino", 
+                ptd.getProfessor().getEmail(), 
+                "PTD Aprovado", sb.toString());
 
     }
 

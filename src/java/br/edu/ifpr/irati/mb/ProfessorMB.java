@@ -6,6 +6,7 @@ import br.edu.ifpr.irati.modelo.Professor;
 import br.edu.ifpr.irati.modelo.Usuario;
 import br.edu.ifpr.irati.util.Digest;
 import br.edu.ifpr.irati.util.HashGenerationException;
+import br.edu.ifpr.irati.util.mail.MensagensEmail;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -101,6 +102,21 @@ public class ProfessorMB implements Serializable{
         Dao<Professor> professorDAO = new GenericDAO<>(Professor.class);
         professor.setEstadoUsuario("Habilitado");
         professorDAO.alterar(professor);
+        
+ /* Mensagem a ser encaminhada na submissão de um PTD */
+        StringBuilder sb = new StringBuilder();
+        sb.append("<p>");
+        sb.append("Olá!");
+        sb.append("</p>");
+        sb.append("<p>");
+        sb.append("O Diretor de Ensino habilitou seu acesso ao Sistema de Plano de Trabalho Docente ");
+        sb.append("</p>");
+        
+        MensagensEmail menssagemEmail = new MensagensEmail();
+        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino", 
+                menssagemEmail.getEmailDirecao(), 
+                "Cadastro Aprovado", sb.toString());    
+        
     }
 
     public void desabilitarProfessor(Professor professor) {
@@ -108,6 +124,20 @@ public class ProfessorMB implements Serializable{
         professor.setEstadoUsuario("Desabilitado");
         professorDAO.alterar(professor);
         professores = professorDAO.buscarTodos(Professor.class);
+        
+        /* Mensagem a ser encaminhada na submissão de um PTD */
+        StringBuilder sb = new StringBuilder();
+        sb.append("<p>");
+        sb.append("Olá!");
+        sb.append("</p>");
+        sb.append("<p>");
+        sb.append("O Diretor de Ensino habilitou seu acesso ao Sistema de Plano de Trabalho Docente ");
+        sb.append("</p>");
+        
+        MensagensEmail menssagemEmail = new MensagensEmail();
+        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino", 
+                menssagemEmail.getEmailDirecao(), 
+                "Cadastro Aprovado", sb.toString());    
     }
 
     public Professor getProfessor() {
