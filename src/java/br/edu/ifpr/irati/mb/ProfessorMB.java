@@ -103,19 +103,19 @@ public class ProfessorMB implements Serializable{
         professor.setEstadoUsuario("Habilitado");
         professorDAO.alterar(professor);
         
- /* Mensagem a ser encaminhada na submissão de um PTD */
+ /* Mensagem a ser encaminhada quando o acesso de um professor é habilitado */
         StringBuilder sb = new StringBuilder();
         sb.append("<p>");
         sb.append("Olá!");
         sb.append("</p>");
         sb.append("<p>");
-        sb.append("O Diretor de Ensino habilitou seu acesso ao Sistema de Plano de Trabalho Docente ");
+        sb.append("O Diretor de Ensino habilitou seu acesso ao Sistema de Plano de Trabalho Docente");
         sb.append("</p>");
         
         MensagensEmail menssagemEmail = new MensagensEmail();
-        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino", 
-                menssagemEmail.getEmailDirecao(), 
-                "Cadastro Aprovado", sb.toString());    
+        menssagemEmail.enviarMensagemGenerica("SPTD", professor.getNomeCompleto(), 
+                professor.getEmail(), 
+                "Acesso Habilitado", sb.toString());    
         
     }
 
@@ -125,19 +125,19 @@ public class ProfessorMB implements Serializable{
         professorDAO.alterar(professor);
         professores = professorDAO.buscarTodos(Professor.class);
         
-        /* Mensagem a ser encaminhada na submissão de um PTD */
+        /* Mensagem a ser encaminhada quando o acesso de um professor é desabilitado */
         StringBuilder sb = new StringBuilder();
         sb.append("<p>");
         sb.append("Olá!");
         sb.append("</p>");
         sb.append("<p>");
-        sb.append("O Diretor de Ensino habilitou seu acesso ao Sistema de Plano de Trabalho Docente ");
+        sb.append("Seu acesso ao Sistema de Plano de Trabalho Docente foi desabilitado");
         sb.append("</p>");
         
         MensagensEmail menssagemEmail = new MensagensEmail();
-        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino", 
-                menssagemEmail.getEmailDirecao(), 
-                "Cadastro Aprovado", sb.toString());    
+        menssagemEmail.enviarMensagemGenerica("SPTD", professor.getNomeCompleto(), 
+                professor.getEmail(), 
+                "Acesso Desabilitado", sb.toString());    
     }
 
     public Professor getProfessor() {

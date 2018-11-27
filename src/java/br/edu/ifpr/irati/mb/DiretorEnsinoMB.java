@@ -110,6 +110,22 @@ public class DiretorEnsinoMB implements Serializable{
         Dao<DiretorEnsino> diretorEnsinoDAO = new GenericDAO<>(DiretorEnsino.class);
         diretorEnsino.setEstadoUsuario("Habilitado");
         diretorEnsinoDAO.alterar(diretorEnsino);
+        
+          /* Mensagem a ser encaminhada na aprovação de um novo Diretor de Ensino */
+        StringBuilder sb = new StringBuilder();
+        sb.append("<p>");
+        sb.append("Olá!");
+        sb.append("</p>");
+        sb.append("<p>");
+        sb.append("Seu acesso ao Sistema de Plano de Trabalho Docente como Diretor de Ensino foi habilitado!");
+        sb.append("</p>");
+        
+        MensagensEmail menssagemEmail = new MensagensEmail();
+        menssagemEmail.enviarMensagemGenerica("SPTD", diretorEnsino.getNomeCompleto(), 
+                diretorEnsino.getEmail(), 
+                "Acesso Habilitado!", sb.toString());
+
+        
         return "/Login?faces-redirect=true";
 
     }
@@ -119,6 +135,21 @@ public class DiretorEnsinoMB implements Serializable{
         Dao<DiretorEnsino> diretorEnsinoDAO = new GenericDAO<>(DiretorEnsino.class);
         diretorEnsino.setEstadoUsuario("Desabilitado");
         diretorEnsinoDAO.alterar(diretorEnsino);
+        
+            
+        /* Mensagem a ser encaminhada quando o acesso de um diretor de ensino é desabilitado */
+        StringBuilder sb = new StringBuilder();
+        sb.append("<p>");
+        sb.append("Olá!");
+        sb.append("</p>");
+        sb.append("<p>");
+        sb.append("Seu acesso ao Sistema de Plano de Trabalho Docente como Diretor de Ensino foi desabilitado");
+        sb.append("</p>");
+        
+        MensagensEmail menssagemEmail = new MensagensEmail();
+        menssagemEmail.enviarMensagemGenerica("SPTD", diretorEnsino.getNomeCompleto(), 
+                diretorEnsino.getEmail(), 
+                "Acesso Desabilitado", sb.toString()); 
 
     }
 
@@ -150,13 +181,13 @@ public class DiretorEnsinoMB implements Serializable{
         ptd.setEstadoPTD("Reprovado");
         ptdSubmetidoDAO.alterar(ptd);
         
-          /* Mensagem a ser encaminhada na aprovação de um PTD */
+          /* Mensagem a ser encaminhada na reprovação de um PTD */
         StringBuilder sb = new StringBuilder();
         sb.append("<p>");
         sb.append("Olá!");
         sb.append("</p>");
         sb.append("<p>");
-        sb.append("O Diretor de Ensino aprovou um de seus PTDs ");
+        sb.append("O Diretor de Ensino reprovou um de seus PTDs ");
         sb.append("</p>");
         
         MensagensEmail menssagemEmail = new MensagensEmail();
