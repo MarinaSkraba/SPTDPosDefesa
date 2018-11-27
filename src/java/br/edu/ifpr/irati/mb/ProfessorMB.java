@@ -17,7 +17,7 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class ProfessorMB implements Serializable{
+public class ProfessorMB implements Serializable {
 
     private Professor professor;
     private Professor professorSelecionado;
@@ -38,7 +38,7 @@ public class ProfessorMB implements Serializable{
         errosEdicaoProfessor = new ArrayList<>();
 
     }
-    
+
     public String salvarProfessor() throws HashGenerationException {
 
         String senhaSHA512 = "";
@@ -98,7 +98,7 @@ public class ProfessorMB implements Serializable{
 
     }
 
-    public void habilitarProfessor(Professor professor){
+    public void habilitarProfessor(Professor professor) {
         Dao<Professor> professorDAO = new GenericDAO<>(Professor.class);
         professor.setEstadoUsuario("Habilitado");
         professorDAO.alterar(professor);
@@ -133,7 +133,7 @@ public class ProfessorMB implements Serializable{
         sb.append("<p>");
         sb.append("Seu acesso ao Sistema de Plano de Trabalho Docente foi desabilitado");
         sb.append("</p>");
-        
+
         MensagensEmail menssagemEmail = new MensagensEmail();
         menssagemEmail.enviarMensagemGenerica("SPTD", professor.getNomeCompleto(), 
                 professor.getEmail(), 
@@ -203,11 +203,11 @@ public class ProfessorMB implements Serializable{
             errosCadastroProfessor.add("O campo 'Confirmação senha' deve ser obrigatoriamente preenchido");
 
         } else if (professor.getTipoContrato() == null) {
-            
+
             errosCadastroProfessor.add("O campo 'Tipo contrato' deve ser obrigatoriamente preenchido");
 
-        } 
-        
+        }
+
         return errosCadastroProfessor;
     }
 
