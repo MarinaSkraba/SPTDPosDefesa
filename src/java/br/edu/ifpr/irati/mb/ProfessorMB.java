@@ -102,21 +102,21 @@ public class ProfessorMB implements Serializable {
         Dao<Professor> professorDAO = new GenericDAO<>(Professor.class);
         professor.setEstadoUsuario("Habilitado");
         professorDAO.alterar(professor);
-
-        /* Mensagem a ser encaminhada na submissão de um PTD */
+        
+ /* Mensagem a ser encaminhada quando o acesso de um professor é habilitado */
         StringBuilder sb = new StringBuilder();
         sb.append("<p>");
         sb.append("Olá!");
         sb.append("</p>");
         sb.append("<p>");
-        sb.append("O Diretor de Ensino habilitou seu acesso ao Sistema de Plano de Trabalho Docente ");
+        sb.append("O Diretor de Ensino habilitou seu acesso ao Sistema de Plano de Trabalho Docente");
         sb.append("</p>");
-
+        
         MensagensEmail menssagemEmail = new MensagensEmail();
-        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino",
-                menssagemEmail.getEmailDirecao(),
-                "Cadastro Aprovado", sb.toString());
-
+        menssagemEmail.enviarMensagemGenerica("SPTD", professor.getNomeCompleto(), 
+                professor.getEmail(), 
+                "Acesso Habilitado", sb.toString());    
+        
     }
 
     public void desabilitarProfessor(Professor professor) {
@@ -124,41 +124,20 @@ public class ProfessorMB implements Serializable {
         professor.setEstadoUsuario("Desabilitado");
         professorDAO.alterar(professor);
         professores = professorDAO.buscarTodos(Professor.class);
-
-        /* Mensagem a ser encaminhada na submissão de um PTD */
+        
+        /* Mensagem a ser encaminhada quando o acesso de um professor é desabilitado */
         StringBuilder sb = new StringBuilder();
         sb.append("<p>");
         sb.append("Olá!");
         sb.append("</p>");
         sb.append("<p>");
-        sb.append("Sua conta foi desabilitada com sucesso");
+        sb.append("Seu acesso ao Sistema de Plano de Trabalho Docente foi desabilitado");
         sb.append("</p>");
 
         MensagensEmail menssagemEmail = new MensagensEmail();
-        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino",
-                menssagemEmail.getEmailDirecao(),
-                "Cadastro Aprovado", sb.toString());
-    }
-    
-    public void negarPedidoAcessoProfessor(Professor professor) {
-        Dao<Professor> professorDAO = new GenericDAO<>(Professor.class);
-        professor.setEstadoUsuario("Desabilitado");
-        professorDAO.alterar(professor);
-        professores = professorDAO.buscarTodos(Professor.class);
-
-        /* Mensagem a ser encaminhada na submissão de um PTD */
-        StringBuilder sb = new StringBuilder();
-        sb.append("<p>");
-        sb.append("Olá!");
-        sb.append("</p>");
-        sb.append("<p>");
-        sb.append("Seu pedido de acesso foi negado");
-        sb.append("</p>");
-
-        MensagensEmail menssagemEmail = new MensagensEmail();
-        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino",
-                menssagemEmail.getEmailDirecao(),
-                "Cadastro Aprovado", sb.toString());
+        menssagemEmail.enviarMensagemGenerica("SPTD", professor.getNomeCompleto(), 
+                professor.getEmail(), 
+                "Acesso Desabilitado", sb.toString());    
     }
 
     public Professor getProfessor() {
