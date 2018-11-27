@@ -34,7 +34,7 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class PTDMB implements Serializable{
+public class PTDMB implements Serializable {
 
     private PTD ptd;
     private PTD ptdConcluido;
@@ -101,10 +101,10 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Acessa as informações da variável 'ptd' que representa o PTD em edição e separa
-    nas listas de participações para serem mostradas nas tabelas de participação da 
-    tela de criação e edição de PTDs
-    */
+     Acessa as informações da variável 'ptd' que representa o PTD em edição e separa
+     nas listas de participações para serem mostradas nas tabelas de participação da 
+     tela de criação e edição de PTDs
+     */
     public void atualizarListasParticipacoesPTDEdicao() {
         participacoesAutorPTDEdicao = new ArrayList<>();
         participacoesColabPTDEdicao = new ArrayList<>();
@@ -116,11 +116,11 @@ public class PTDMB implements Serializable{
             }
         }
     }
-    
+
     /*
-    Acessa as informações da variável 'ptdAprovado' e separa nas listas de participações 
-    para serem mostradas nas tabelas de participação da tela 'MostrarPTDAprovado'
-    */
+     Acessa as informações da variável 'ptdAprovado' e separa nas listas de participações 
+     para serem mostradas nas tabelas de participação da tela 'MostrarPTDAprovado'
+     */
     public void atualizarListasParticipacoesPTDAprovado() {
         setParticipacoesAutorPTDAprovado(new ArrayList<>());
         setParticipacoesColabPTDAprovado(new ArrayList<>());
@@ -132,11 +132,11 @@ public class PTDMB implements Serializable{
             }
         }
     }
-    
+
     /*
-    Acessa as informações da variável 'ptdConcluido' e separa nas listas de participações 
-    para serem mostradas nas tabelas de participação da tela 'MostrarPTD'
-    */
+     Acessa as informações da variável 'ptdConcluido' e separa nas listas de participações 
+     para serem mostradas nas tabelas de participação da tela 'MostrarPTD'
+     */
     public void atualizarListasParticipacoesPTDConcluido() {
         setParticipacoesAutorPTDConcluido(new ArrayList<>());
         setParticipacoesColabPTDConcluido(new ArrayList<>());
@@ -148,12 +148,12 @@ public class PTDMB implements Serializable{
             }
         }
     }
-    
+
     /*
-    Considerando que a tela 'MostrarPTD' pode ser acessada por dois caiminhos diferentes -
-    através da tela de busca e da tela de notificações do professor - o método identifica
-    o conteúdo de uma variável auxiliar para executar a função 'voltar' daquela tela
-    */
+     Considerando que a tela 'MostrarPTD' pode ser acessada por dois caiminhos diferentes -
+     através da tela de busca e da tela de notificações do professor - o método identifica
+     o conteúdo de uma variável auxiliar para executar a função 'voltar' daquela tela
+     */
     public String sairTelaMostrarPTD(Usuario usuario) {
         if (saidaTelaMostrarPTDAux.equalsIgnoreCase("")) {
             return "/BuscarPTDs?faces-redirect=true";
@@ -163,12 +163,12 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Considerando que a tela 'BuscarPTDs' pode ser acessada por diferentes caminhos -
-    através da tela de notificações do professor, do docente e da tela 'index' -  o
-    método identica se há um usuário logado no sistema e se, no caso de haver um, que
-    tipo de usuário está logado, para, dessa forma, encaminhar para as respectivas 
-    telas anteriores como ação do botão 'voltar'
-    */
+     Considerando que a tela 'BuscarPTDs' pode ser acessada por diferentes caminhos -
+     através da tela de notificações do professor, do docente e da tela 'index' -  o
+     método identica se há um usuário logado no sistema e se, no caso de haver um, que
+     tipo de usuário está logado, para, dessa forma, encaminhar para as respectivas 
+     telas anteriores como ação do botão 'voltar'
+     */
     public String sairTelaBuscarPTDs(Usuario usuario) {
         if (usuario.getIdUsuario() != 0) {
             if (usuario instanceof Professor) {
@@ -182,11 +182,11 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    No cenário em que os métodos de recuperação do último PTD em edição, de continuação
-    de edição do último PTD em estado de edição e de recuperação de um PTD reprovado
-    funcionam, o método prepararia a tela de criação e edição de PTDs para receber um
-    PTD diferente
-    */
+     No cenário em que os métodos de recuperação do último PTD em edição, de continuação
+     de edição do último PTD em estado de edição e de recuperação de um PTD reprovado
+     funcionam, o método prepararia a tela de criação e edição de PTDs para receber um
+     PTD diferente
+     */
     public void limparVariáveis() {
         errosTabelaAdministrativas = new ArrayList<>();
         errosTabelaApoioEnsino = new ArrayList<>();
@@ -201,12 +201,12 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Devido ao fato das telas de notificações para docentes e para diretor de ensino são
-    telas de apresentação de dados, na tela de login, depois do ManagedBean de usuário
-    ter identificado o tipo de usuário, esse método é chamado para reconhecer qual tela
-    deve ser carregada, encaminhando os métodos que prepararão os dados que serão 
-    apresentados
-    */
+     Devido ao fato das telas de notificações para docentes e para diretor de ensino são
+     telas de apresentação de dados, na tela de login, depois do ManagedBean de usuário
+     ter identificado o tipo de usuário, esse método é chamado para reconhecer qual tela
+     deve ser carregada, encaminhando os métodos que prepararão os dados que serão 
+     apresentados
+     */
     public String concluirLogin(String tela, int idUsuario) {
         if (tela.equalsIgnoreCase("/arearestrita/NotificacoesDocente?faces-redirect=true")) {
             return abrirNotificacoesDocente(idUsuario);
@@ -215,28 +215,28 @@ public class PTDMB implements Serializable{
         } else {
             return tela;
         }
-    }        
+    }
 
     /*
-    Prepara as informações que serão utilizadas na tela 'MostrarPTD' setando o PTD, cuja
-    consulta foi solicitada, e uma variável auxiliar utilizada no método 'sairTelaMostrarPTD'
-    */
+     Prepara as informações que serão utilizadas na tela 'MostrarPTD' setando o PTD, cuja
+     consulta foi solicitada, e uma variável auxiliar utilizada no método 'sairTelaMostrarPTD'
+     */
     public void abrirMostrarPTD(PTD ptd, String s) {
         ptdConcluido = ptd;
         saidaTelaMostrarPTDAux = s;
     }
 
     /*
-    Prepara as informações que serão utilizadas na tela 'MostrarPTDAprovado'
-    */
+     Prepara as informações que serão utilizadas na tela 'MostrarPTDAprovado'
+     */
     public void abrirMostrarPTDAprovado(PTD ptd) {
         ptdAprovado = ptd;
     }
 
     /*
-    Prepara as informações que serão disponibilizadas na tela de notificações referente
-    ao professor
-    */
+     Prepara as informações que serão disponibilizadas na tela de notificações referente
+     ao professor
+     */
     public String abrirNotificacoesDocente(int idUsuario) {
         IPTDDAO ptdDAOEspecifico = new PTDDAO();
         ptdsReprovados = ptdDAOEspecifico.buscarPTDsReprovadosPorProfessor(idUsuario);
@@ -245,15 +245,15 @@ public class PTDMB implements Serializable{
         ptdsArquivados = ptdDAOEspecifico.buscarPTDsArquivadosPorProfessor(idUsuario);
         return "/arearestrita/NotificacoesDocente?faces-redirect=true";
     }
-    
-    public String manterESair(){
+
+    public String manterESair() {
         return "/arearestrita/NotificacoesDocente?faces-redirect=true";
     }
 
     /*
-    Prepara as informações que serão disponibilizadas na tela de notificações referente
-    ao diretor de ensino
-    */
+     Prepara as informações que serão disponibilizadas na tela de notificações referente
+     ao diretor de ensino
+     */
     public String abrirNotificacoesDiretorEnsino(int idUsuario) {
         IPTDDAO ptdDAOEspecifico = new PTDDAO();
         Dao<DiretorEnsino> diretorDAO = new GenericDAO(DiretorEnsino.class);
@@ -276,20 +276,20 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Concentra a chamada dos métodos de conferência/verificação para a tela de criação
-    e edição de PTDs
-    */
+     Concentra a chamada dos métodos de conferência/verificação para a tela de criação
+     e edição de PTDs
+     */
     public void realizarConferencias() {
         verificarErros();
         verificarCargaHorariaPTDEdicao();
     }
 
     /*
-    Realiza a chamada da tela de criação e edição de PTDs criando um PTD em branco, com
-    status em 'EDICAO'. Considerando o caso em que os métodos de recuperação/recarregamento
-    de PTD funcionam, o método busca PTDs que estejam em estado de edição e os coloca em 
-    estado 'CANCELADO'
-    */
+     Realiza a chamada da tela de criação e edição de PTDs criando um PTD em branco, com
+     status em 'EDICAO'. Considerando o caso em que os métodos de recuperação/recarregamento
+     de PTD funcionam, o método busca PTDs que estejam em estado de edição e os coloca em 
+     estado 'CANCELADO'
+     */
     public String abrirCriarCorrigirPTDEmBranco(Usuario usuario) {
         Dao<PTD> ptdDAOGenerico = new GenericDAO<>(PTD.class);
         Dao<Professor> professorDAOGenerico = new GenericDAO<>(Professor.class);
@@ -321,9 +321,9 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Verifica a existência de PTDs no estado de edição e coloca o resultado na variável de 
-    ptd que é utilizada na tela de criação e edição de PTDs
-    */
+     Verifica a existência de PTDs no estado de edição e coloca o resultado na variável de 
+     ptd que é utilizada na tela de criação e edição de PTDs
+     */
     public String abrirCriarCorrigirPTDContinuarEdicao(Usuario usuario) {
 
         IPTDDAO ptdDAOEspecifico = new PTDDAO();
@@ -338,10 +338,10 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Realiza uma busca dos PTDs concluídos pelo professor para encontrar o PTD vigente, 
-    recupera suas informações e as cadastra fazendo parte de um novo PTD, este em 
-    edição
-    */
+     Realiza uma busca dos PTDs concluídos pelo professor para encontrar o PTD vigente, 
+     recupera suas informações e as cadastra fazendo parte de um novo PTD, este em 
+     edição
+     */
     public String abrirCriarCorrigirPTDAPartirDoUltimoArquivado(Usuario usuario) {
         Dao<PTD> ptdDAOGenerico = new GenericDAO<>(PTD.class);
         IPTDDAO ptdDAOEspecifico = new PTDDAO();
@@ -488,9 +488,9 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Conforme solicitação de um usuário docente, no método é criado um novo PTD em estado 
-    de edição recuperando as informações do PTD reprovado selecionado
-    */
+     Conforme solicitação de um usuário docente, no método é criado um novo PTD em estado 
+     de edição recuperando as informações do PTD reprovado selecionado
+     */
     public void abrirCriarCorrigirPTDAPartirDeUmReprovado(PTD ptdReprovado) {
         Dao<PTD> ptdDAOGenerico = new GenericDAO<>(PTD.class);
         IPTDDAO ptdDAOEspecifico = new PTDDAO();
@@ -514,14 +514,14 @@ public class PTDMB implements Serializable{
 
     /*
     
-    */
+     */
     public String cancelarPTD(PTD ptdACancelar, int idUsuario, String telaFutura, UsuarioMB usuarioMB) {
 
         Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
 
         ptdDAO.excluir(ptdACancelar); //a operação é realizada em cascata.
         usuarioMB.realizarLogout();
-        if (telaFutura.equalsIgnoreCase("login")) {                                               
+        if (telaFutura.equalsIgnoreCase("login")) {
             return "/Login?faces-redirect=true";
         } else {
             return abrirNotificacoesDocente(idUsuario);
@@ -530,8 +530,8 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Altera um PTD reprovado mudando seu estado para 'CANCELADO'
-    */
+     Altera um PTD reprovado mudando seu estado para 'CANCELADO'
+     */
     public void descartarPTD(PTD ptdADescartar) {
 
         Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
@@ -542,16 +542,15 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Altera um PTD em edição mudando seu estado para 'AVALIACAO' e alterando sua carga 
-    horária total calculada no método de calculo de 'verificarCargaHorariaPTDEdicao'
-    */
+     Altera um PTD em edição mudando seu estado para 'AVALIACAO' e alterando sua carga 
+     horária total calculada no método de calculo de 'verificarCargaHorariaPTDEdicao'
+     */
     public String submeterPTD(int idUsuario) {
         Dao<PTD> ptdDAOGenerico = new GenericDAO<>(PTD.class);
         getPtd().setEstadoPTD("AVALIACAO");
         ptd.setCargaHorariaTotal(cargaHorariaTotalPTDPTDEdicao);
         ptdDAOGenerico.alterar(getPtd());
-        
-        
+
         /* Mensagem a ser encaminhada na submissão de um PTD */
         StringBuilder sb = new StringBuilder();
         sb.append("<p>");
@@ -562,22 +561,22 @@ public class PTDMB implements Serializable{
         sb.append(ptd.getProfessor().getNomeCompleto());
         sb.append(" submeteu um novo PTD para avaliação.");
         sb.append("</p>");
-        
+
         MensagensEmail menssagemEmail = new MensagensEmail();
-        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino", 
-                menssagemEmail.getEmailDirecao(), 
+        menssagemEmail.enviarMensagemGenerica("SPTD", "Direção de Ensino",
+                menssagemEmail.getEmailDirecao(),
                 "PTD Submetido para Avaliação", sb.toString());
-                                
+
         return abrirNotificacoesDocente(idUsuario);
     }
 
     /*
-    Todas os erros de dados e irregularidades legais ao serem identificados são adicionados
-    em listas específicas, que através desse método apontam para caixas de dialogo na 
-    interface. Quando houverem erros não será permitida a submissão do PTD, e no caso de
-    irregularidades, a submissão será permitida se houverem justificativas/comentários 
-    nas tabelas referêntes ao que foi apontado
-    */
+     Todas os erros de dados e irregularidades legais ao serem identificados são adicionados
+     em listas específicas, que através desse método apontam para caixas de dialogo na 
+     interface. Quando houverem erros não será permitida a submissão do PTD, e no caso de
+     irregularidades, a submissão será permitida se houverem justificativas/comentários 
+     nas tabelas referêntes ao que foi apontado
+     */
     public String verificarPossibilidadeSubmissao() {
 
         String nomeCaixaDialogo = "";
@@ -663,9 +662,9 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Verifica a ocorrência de erros que caracterizam falhas no momento de inserção de 
-    dados inseridos
-    */
+     Verifica a ocorrência de erros que caracterizam falhas no momento de inserção de 
+     dados inseridos
+     */
     public void verificarErros() {
         errosTabelaAdministrativas = new ArrayList();
         errosTabelaApoioEnsino = new ArrayList();
@@ -685,6 +684,18 @@ public class PTDMB implements Serializable{
             }
 
             for (Horario hadm : adm.getHorariosAdministracao()) {
+
+                for (Horario hadmaux : adm.getHorariosAdministracao()) {
+                    if (hadm.getDiaSemana().equals(hadmaux.getDiaSemana()) && hadm.getIdHorario() != hadmaux.getIdHorario()) {
+
+                        if ((hadm.getHoraInicio().getTime() < hadmaux.getHoraTermino().getTime() && hadm.getHoraInicio().getTime() >= hadmaux.getHoraInicio().getTime()) | (hadm.getHoraTermino().getTime() <= hadmaux.getHoraTermino().getTime() && hadm.getHoraTermino().getTime() > hadmaux.getHoraInicio().getTime())) {
+
+                            errosTabelaAdministrativas.add("Há conflitos entre horários na seção Atividades Administrativas");
+
+                        }
+
+                    }
+                }
 
                 for (Apoio ap : getPtd().getApoios()) {
 
@@ -786,7 +797,18 @@ public class PTDMB implements Serializable{
             }
 
             for (Horario hapoio : apoio.getHorariosApoio()) {
+                for (Horario hapoioaux : apoio.getHorariosApoio()) {
+                    if (hapoio.getDiaSemana().equals(hapoioaux.getDiaSemana()) && hapoio.getIdHorario() != hapoioaux.getIdHorario()) {
 
+                        if ((hapoio.getHoraInicio().getTime() < hapoioaux.getHoraTermino().getTime() && hapoio.getHoraInicio().getTime() >= hapoioaux.getHoraInicio().getTime()) | (hapoio.getHoraTermino().getTime() <= hapoioaux.getHoraTermino().getTime() && hapoio.getHoraTermino().getTime() > hapoioaux.getHoraInicio().getTime())) {
+
+                            errosTabelaApoioEnsino.add("Há conflitos entre horários"
+                                    + "na seção Apoio ao Ensino");
+
+                        }
+
+                    }
+                }
                 for (Administracao adm : getPtd().getAdministrativas()) {
 
                     for (Horario hadmin : adm.getHorariosAdministracao()) {
@@ -884,15 +906,26 @@ public class PTDMB implements Serializable{
                         + "Outras atividades que pretendo propor no semestre");
             }
 
-            for (Horario h : aSP.getHorariosAtividadesASerProposta()) {
+            for (Horario hasp : aSP.getHorariosAtividadesASerProposta()) {
+                for (Horario haspaux : aSP.getHorariosAtividadesASerProposta()) {
+                    if (hasp.getDiaSemana().equals(haspaux.getDiaSemana()) && hasp.getIdHorario() != haspaux.getIdHorario()) {
 
-                if (h.getHoraInicio().getTime() > h.getHoraTermino().getTime()) {
+                        if ((hasp.getHoraInicio().getTime() < haspaux.getHoraTermino().getTime() && hasp.getHoraInicio().getTime() >= haspaux.getHoraInicio().getTime()) | (hasp.getHoraTermino().getTime() <= haspaux.getHoraTermino().getTime() && hasp.getHoraTermino().getTime() > haspaux.getHoraInicio().getTime())) {
+
+                            errosTabelaAtividadesASeremPropostas.add("Há conflitos entre horários"
+                                    + "na seção Atividades a Serem Propostas");
+
+                        }
+
+                    }
+                }
+                if (hasp.getHoraInicio().getTime() > hasp.getHoraTermino().getTime()) {
                     errosTabelaAtividadesASeremPropostas.add("Você inseriu um horário de início posterior ao de término!");
 
-                } else if (h.getHoraInicio().getTime() == 0) {
+                } else if (hasp.getHoraInicio().getTime() == 0) {
                     errosTabelaAtividadesASeremPropostas.add("Insira um Horário de Início!");
 
-                } else if (h.getHoraTermino().getTime() == 0) {
+                } else if (hasp.getHoraTermino().getTime() == 0) {
                     errosTabelaAtividadesASeremPropostas.add("Insira um Horário de Término!");
 
                 } else if (aSP.getCargaHorariaSemanalAtividadeASerProposta() == 0) {
@@ -933,13 +966,24 @@ public class PTDMB implements Serializable{
                 }
             }
             if (!aula.getHorariosAula().isEmpty()) {
-                if (cargaHoraHorario > (aula.getCargaHorariaTotal()+ 0.2)|cargaHoraHorario < (aula.getCargaHorariaTotal()- 0.2)) {
+                if (cargaHoraHorario > (aula.getCargaHorariaTotal() + 0.2) | cargaHoraHorario < (aula.getCargaHorariaTotal() - 0.2)) {
                     errosTabelaAula.add("A carga horária fornecida é diferente da carga resultante dos horários fornecidos em aula! Atualize a atividade ou seus horários.");
                 }
             }
 
             for (Horario ha : aula.getHorariosAula()) {
+                for (Horario haulaaux : aula.getHorariosAula()) {
+                    if (ha.getDiaSemana().equals(haulaaux.getDiaSemana()) && ha.getIdHorario() != haulaaux.getIdHorario()) {
 
+                        if ((ha.getHoraInicio().getTime() < haulaaux.getHoraTermino().getTime() && ha.getHoraInicio().getTime() >= haulaaux.getHoraInicio().getTime()) | (ha.getHoraTermino().getTime() <= haulaaux.getHoraTermino().getTime() && ha.getHoraTermino().getTime() > haulaaux.getHoraInicio().getTime())) {
+
+                            errosTabelaAula.add("Há conflitos entre horários"
+                                    + "na seção Aulas");
+
+                        }
+
+                    }
+                }
                 for (Administracao adm : getPtd().getAdministrativas()) {
 
                     for (Horario hadmin : adm.getHorariosAdministracao()) {
@@ -1041,7 +1085,18 @@ public class PTDMB implements Serializable{
             }
 
             for (Horario hME : mE.getHorariosManutecao()) {
+                for (Horario hmanuaux : mE.getHorariosManutecao()) {
+                    if (hME.getDiaSemana().equals(hmanuaux.getDiaSemana()) && hME.getIdHorario() != hmanuaux.getIdHorario()) {
 
+                        if ((hME.getHoraInicio().getTime() < hmanuaux.getHoraTermino().getTime() && hME.getHoraInicio().getTime() >= hmanuaux.getHoraInicio().getTime()) | (hME.getHoraTermino().getTime() <= hmanuaux.getHoraTermino().getTime() && hME.getHoraTermino().getTime() > hmanuaux.getHoraInicio().getTime())) {
+
+                            errosTabelaManuEnsino.add("Há conflitos entre horários"
+                                    + "na seção Manutenção ao Ensino");
+
+                        }
+
+                    }
+                }
                 for (Administracao adm : getPtd().getAdministrativas()) {
 
                     for (Horario hadmin : adm.getHorariosAdministracao()) {
@@ -1136,6 +1191,19 @@ public class PTDMB implements Serializable{
             }
 
             for (Horario hoTa : oTA.getHorariosOutroTipoAtividade()) {
+
+                for (Horario hhotaaux : oTA.getHorariosOutroTipoAtividade()) {
+                    if (hoTa.getDiaSemana().equals(hhotaaux.getDiaSemana()) && hoTa.getIdHorario() != hhotaaux.getIdHorario()) {
+
+                        if ((hoTa.getHoraInicio().getTime() < hhotaaux.getHoraTermino().getTime() && hoTa.getHoraInicio().getTime() >= hhotaaux.getHoraInicio().getTime()) | (hoTa.getHoraTermino().getTime() <= hhotaaux.getHoraTermino().getTime() && hoTa.getHoraTermino().getTime() > hhotaaux.getHoraInicio().getTime())) {
+
+                            errosTabelaOutrasAtividades.add("Há conflitos entre horários"
+                                    + "na seção Outras Atividades desenvolvidas no campus");
+
+                        }
+
+                    }
+                }
 
                 for (Administracao adm : getPtd().getAdministrativas()) {
 
@@ -1232,7 +1300,18 @@ public class PTDMB implements Serializable{
 
             if (p.getRotulo().equalsIgnoreCase("Autor")) {
                 for (Horario hpartAutor : p.getHorariosParticipacao()) {
+                    for (Horario hpartAutoraux : p.getHorariosParticipacao()) {
+                        if (hpartAutor.getDiaSemana().equals(hpartAutoraux.getDiaSemana()) && hpartAutor.getIdHorario() != hpartAutoraux.getIdHorario()) {
 
+                            if ((hpartAutor.getHoraInicio().getTime() < hpartAutoraux.getHoraTermino().getTime() && hpartAutor.getHoraInicio().getTime() >= hpartAutoraux.getHoraInicio().getTime()) | (hpartAutor.getHoraTermino().getTime() <= hpartAutoraux.getHoraTermino().getTime() && hpartAutor.getHoraTermino().getTime() > hpartAutoraux.getHoraInicio().getTime())) {
+
+                                errosTabelaPesquisaExtensaoAutor.add("Há conflitos entre horários"
+                                        + "na seção Projetos Pesquisa e/ou Extensão como Autor");
+
+                            }
+
+                        }
+                    }
                     for (Administracao adm : getPtd().getAdministrativas()) {
 
                         for (Horario hadmin : adm.getHorariosAdministracao()) {
@@ -1331,7 +1410,18 @@ public class PTDMB implements Serializable{
                 }
             } else if (p.getRotulo().equalsIgnoreCase("Colaborador")) {
                 for (Horario hpartColab : p.getHorariosParticipacao()) {
+                    for (Horario hpartColabaux : p.getHorariosParticipacao()) {
+                        if (hpartColab.getDiaSemana().equals(hpartColabaux.getDiaSemana()) && hpartColab.getIdHorario() != hpartColabaux.getIdHorario()) {
 
+                            if ((hpartColab.getHoraInicio().getTime() < hpartColabaux.getHoraTermino().getTime() && hpartColab.getHoraInicio().getTime() >= hpartColabaux.getHoraInicio().getTime()) | (hpartColab.getHoraTermino().getTime() <= hpartColabaux.getHoraTermino().getTime() && hpartColab.getHoraTermino().getTime() > hpartColabaux.getHoraInicio().getTime())) {
+
+                                errosTabelaPesquisaExtensaoAutor.add("Há conflitos entre horários"
+                                        + "na seção Projetos Pesquisa e/ou Extensão como Autor");
+
+                            }
+
+                        }
+                    }
                     for (Administracao adm : getPtd().getAdministrativas()) {
 
                         for (Horario hadmin : adm.getHorariosAdministracao()) {
@@ -1434,10 +1524,10 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    As caixas das listas de erros e irregularidades só são mostradas caso das listas
-    não estarem vazias, assim a visibilidade (no caso a opacidade) das caixas é dada
-    pelo resultado dessa verificação
-    */
+     As caixas das listas de erros e irregularidades só são mostradas caso das listas
+     não estarem vazias, assim a visibilidade (no caso a opacidade) das caixas é dada
+     pelo resultado dessa verificação
+     */
     public int verificarConteúdoListaParaOpacidade(List<String> lista) {
         if (lista.isEmpty()) {
             return 0;
@@ -1447,10 +1537,10 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Percorre as listas de horários dentro das atividades das listas de atividades do
-    PTD em edição alterando a carga horária total de cada seção identificando irregularidas
-    perante a legislação durante a passagem pelas listas
-    */
+     Percorre as listas de horários dentro das atividades das listas de atividades do
+     PTD em edição alterando a carga horária total de cada seção identificando irregularidas
+     perante a legislação durante a passagem pelas listas
+     */
     public void verificarCargaHorariaPTDEdicao() {
 
         irregularidadesPTDEdicao = new ArrayList<>();
@@ -1644,11 +1734,11 @@ public class PTDMB implements Serializable{
                 + ptd.getCargaHorariaSecaoProjetoPesquisaExtensaoAutor()
                 + ptd.getCargaHorariaSecaoProjetoPesquisaExtensaoColab();
         double regime = 20;
-        if ((getPtd().getProfessor().getRegimeTrabalho().equals("40h") | getPtd().getProfessor().getRegimeTrabalho().equals("Dedicação Exclusiva")) &&((cargaHorariaTotalPTDAux < 39.5| cargaHorariaTotalPTDAux > 40.5)) ) {
+        if ((getPtd().getProfessor().getRegimeTrabalho().equals("40h") | getPtd().getProfessor().getRegimeTrabalho().equals("Dedicação Exclusiva")) && ((cargaHorariaTotalPTDAux < 39.5 | cargaHorariaTotalPTDAux > 40.5))) {
 
             irregularidadesPTDEdicao.add("A carga horária do PTD diverge com seu regime de trabalho de 40h");
 
-        } else if (getPtd().getProfessor().getRegimeTrabalho().equals("20h") && ((cargaHorariaTotalPTDAux < 19.5|cargaHorariaTotalPTDAux > 20.5))) {
+        } else if (getPtd().getProfessor().getRegimeTrabalho().equals("20h") && ((cargaHorariaTotalPTDAux < 19.5 | cargaHorariaTotalPTDAux > 20.5))) {
 
             irregularidadesPTDEdicao.add("A carga horária do PTD diverge com seu regime de trabalho de 20h");
 
@@ -1672,7 +1762,7 @@ public class PTDMB implements Serializable{
 
     /*
     
-    */
+     */
     public String salvarJustificativasEComentários() {
         Dao<PTD> ptdDAO = new GenericDAO<>(PTD.class);
         ptdDAO.alterar(ptd);
@@ -1680,10 +1770,10 @@ public class PTDMB implements Serializable{
     }
 
     /*
-    Altera o estado do atual PTD concluído de um professor e mudao o estado do PTD 
-    aprovado selecionado para 'CONCLUÍDO' o que faz com que o PTD seja considerado o 
-    atual PTD de um professor (o PTD vigente).
-    */
+     Altera o estado do atual PTD concluído de um professor e mudao o estado do PTD 
+     aprovado selecionado para 'CONCLUÍDO' o que faz com que o PTD seja considerado o 
+     atual PTD de um professor (o PTD vigente).
+     */
     public void concluirPTD(PTD ptd) {
         Dao<PTD> ptdDAOGenerico = new GenericDAO<>(PTD.class);
         ptd.setEstadoPTD("CONCLUÍDO");
@@ -2094,7 +2184,5 @@ public class PTDMB implements Serializable{
     public void setPtdAprovado(PTD ptdAprovado) {
         this.ptdAprovado = ptdAprovado;
     }
-
-  
 
 }
