@@ -246,7 +246,7 @@
                     </div>
                     <br/>
                     <div id="contentEstilizado">
-                        <h:outputText value="Professores a Habilitar" 
+                        <h:outputText value="Solicitações de acesso | Professores" 
                                       styleClass="text01" 
                                       style="margin: 0px ;"/>
                         <br/>
@@ -267,7 +267,7 @@
                                 </f:facet>
 
                                 <div id="linha">
-                                    <h:panelGrid columns="2" 
+                                    <h:panelGrid columns="3" 
                                                  style="width:100%;" >
 
                                         <h:outputText value="#{professorEsperando.nomeCompleto}"  
@@ -278,6 +278,12 @@
                                                          value="Habilitar"
                                                          ajax="false" 
                                                          actionListener="#{professorMB.habilitarProfessor(professorEsperando)}"
+                                                         action="#{pTDMB.abrirNotificacoesDiretorEnsino(usuarioMB.usuarioLogado.idUsuario)}"/>
+                                        <p:commandButton styleClass="botaoVermelho" 
+                                                         style="margin: 5px 0px 5px; float: left; height: 35px;" 
+                                                         value="Negar pedido"
+                                                         ajax="false" 
+                                                         actionListener="#{professorMB.desabilitarProfessor(professorEsperando)}"
                                                          action="#{pTDMB.abrirNotificacoesDiretorEnsino(usuarioMB.usuarioLogado.idUsuario)}"/>
 
                                     </h:panelGrid>
@@ -292,7 +298,7 @@
                     </div>
                     <br/>
                     <div id="contentEstilizado">
-                        <h:outputText value="Novos Diretores de Ensino" 
+                        <h:outputText value="Solicitações de acesso | Diretores de Ensino" 
                                       styleClass="text01" 
                                       style="margin: 0px ;"/>
                         <br/>
