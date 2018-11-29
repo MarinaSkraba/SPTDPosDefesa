@@ -1746,7 +1746,7 @@ public class PTDMB implements Serializable {
         if (getPtd().getProfessor().getRegimeTrabalho().equalsIgnoreCase("40h") | getPtd().getProfessor().getRegimeTrabalho().equalsIgnoreCase("Dedicação Exclusiva")) {
             regime = 40;
         }
-        if (regime == cargaHorariaTotalPTDAux) {
+        if (regime == cargaHorariaTotalPTDAux && irregularidadesPTDEdicao.isEmpty()) {
             setEstadoCargaHorariaPTD("CORRETO");
         } else {
             setEstadoCargaHorariaPTD("INCORRETO");
