@@ -27,8 +27,13 @@ import br.edu.ifpr.irati.modelo.Usuario;
 import br.edu.ifpr.irati.util.mail.Mailer;
 import br.edu.ifpr.irati.util.mail.MensagensEmail;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javafx.scene.input.DataFormat;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -62,9 +67,22 @@ public class PTDMB implements Serializable {
     private List<String> errosTabelaAdministrativas;
     private List<String> errosTabelaOutrasAtividades;
     private List<String> errosTabelaAtividadesASeremPropostas;
+    private List<String> errosTurno;
     private List<String> irregularidadesPTDEdicao;
     private double cargaHorariaTotalPTDPTDEdicao;
     private String saidaTelaMostrarPTDAux;
+    private List<String> periodoAtividadesSegunda;
+    private List<String> periodoAtividadesTerca;
+    private List<String> periodoAtividadesQuarta;
+    private List<String> periodoAtividadesQuinta;
+    private List<String> periodoAtividadesSexta;
+    private List<String> periodoAtividadesSabado;
+    private final String horarioMaximoMatutino = "12:30";
+    private final String horarioMaximoVespertino = "18:00";
+    private final String horarioMaximoNoturno = "22:00";
+    private final String horarioInicioMatutino = "7:10";
+    private final String horarioInicioVespertino = "12:45";
+    private final String horarioInicioNoturno = "22:00";
 
     public PTDMB() {
 
@@ -95,8 +113,15 @@ public class PTDMB implements Serializable {
         errosTabelaAdministrativas = new ArrayList<>();
         errosTabelaOutrasAtividades = new ArrayList<>();
         errosTabelaAtividadesASeremPropostas = new ArrayList<>();
+        errosTurno = new ArrayList<>();
         irregularidadesPTDEdicao = new ArrayList<>();
         saidaTelaMostrarPTDAux = "";
+        periodoAtividadesSegunda = new ArrayList<>();
+        periodoAtividadesTerca = new ArrayList<>();
+        periodoAtividadesQuarta = new ArrayList<>();
+        periodoAtividadesQuinta = new ArrayList<>();
+        periodoAtividadesSexta = new ArrayList<>();
+        periodoAtividadesSabado = new ArrayList<>();
 
     }
 
@@ -279,7 +304,7 @@ public class PTDMB implements Serializable {
      Concentra a chamada dos métodos de conferência/verificação para a tela de criação
      e edição de PTDs
      */
-    public void realizarConferencias() {
+    public void realizarConferencias() throws ParseException {
         verificarErros();
         verificarCargaHorariaPTDEdicao();
     }
@@ -577,7 +602,7 @@ public class PTDMB implements Serializable {
      irregularidades, a submissão será permitida se houverem justificativas/comentários 
      nas tabelas referêntes ao que foi apontado
      */
-    public String verificarPossibilidadeSubmissao() {
+    public String verificarPossibilidadeSubmissao() throws ParseException {
 
         String nomeCaixaDialogo = "";
         atualizarListasParticipacoesPTDEdicao();
@@ -665,7 +690,7 @@ public class PTDMB implements Serializable {
      Verifica a ocorrência de erros que caracterizam falhas no momento de inserção de 
      dados inseridos
      */
-    public void verificarErros() {
+    public void verificarErros() throws ParseException {
         errosTabelaAdministrativas = new ArrayList();
         errosTabelaApoioEnsino = new ArrayList();
         errosTabelaAtividadesASeremPropostas = new ArrayList();
@@ -674,6 +699,13 @@ public class PTDMB implements Serializable {
         errosTabelaOutrasAtividades = new ArrayList();
         errosTabelaPesquisaExtensaoAutor = new ArrayList();
         errosTabelaPesquisaExtensaoColaborador = new ArrayList();
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date horaMaxMat = dateFormat.parse(horarioMaximoMatutino);
+        Date horaMaxVesp = dateFormat.parse(horarioMaximoVespertino);
+        Date horaMaxNot = dateFormat.parse(horarioMaximoNoturno);
+        Date hoarInMat = dateFormat.parse(horarioInicioMatutino);
+        Date horaIntVesp = dateFormat.parse(horarioInicioVespertino);
+        Date horaInNot = dateFormat.parse(horarioInicioNoturno);
 
         for (Administracao adm : getPtd().getAdministrativas()) {
 
@@ -684,6 +716,61 @@ public class PTDMB implements Serializable {
             }
 
             for (Horario hadm : adm.getHorariosAdministracao()) {
+
+                if (hadm.getDiaSemana().equals("Segunda") && ((hadm.getHoraTermino().getTime() <= horaMaxMat.getTime() && hadm.getHoraTermino().getTime() > hoarInMat.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hadm.getHoraTermino().getTime() > hoarInMat.getTime() && hadm.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSegunda.add("Matutino");
+                }
+                if (hadm.getDiaSemana().equals("Segunda") && ((hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hadm.getHoraTermino().getTime() > horaIntVesp.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hadm.getHoraTermino().getTime() > horaIntVesp.getTime() && hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSegunda.add("Vespertino");
+                }
+                if (hadm.getDiaSemana().equals("Segunda") && ((hadm.getHoraTermino().getTime() <= horaMaxNot.getTime() && hadm.getHoraTermino().getTime() > horaInNot.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hadm.getHoraTermino().getTime() > horaInNot.getTime() && hadm.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSegunda.add("Noturno");
+                }
+                if (hadm.getDiaSemana().equals("Terça") && ((hadm.getHoraTermino().getTime() <= horaMaxMat.getTime() && hadm.getHoraTermino().getTime() > hoarInMat.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hadm.getHoraTermino().getTime() > hoarInMat.getTime() && hadm.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesTerca.add("Matutino");
+                }
+                if (hadm.getDiaSemana().equals("Terça") && ((hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hadm.getHoraTermino().getTime() > horaIntVesp.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hadm.getHoraTermino().getTime() > horaIntVesp.getTime() && hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesTerca.add("Vespertino");
+                }
+                if (hadm.getDiaSemana().equals("Terça") && ((hadm.getHoraTermino().getTime() <= horaMaxNot.getTime() && hadm.getHoraTermino().getTime() > horaInNot.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hadm.getHoraTermino().getTime() > horaInNot.getTime() && hadm.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesTerca.add("Noturno");
+                }
+                if (hadm.getDiaSemana().equals("Quarta") && ((hadm.getHoraTermino().getTime() <= horaMaxMat.getTime() && hadm.getHoraTermino().getTime() > hoarInMat.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hadm.getHoraTermino().getTime() > hoarInMat.getTime() && hadm.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuarta.add("Matutino");
+                }
+                if (hadm.getDiaSemana().equals("Quarta") && ((hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hadm.getHoraTermino().getTime() > horaIntVesp.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hadm.getHoraTermino().getTime() > horaIntVesp.getTime() && hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuarta.add("Vespertino");
+                }
+                if (hadm.getDiaSemana().equals("Quarta") && ((hadm.getHoraTermino().getTime() <= horaMaxNot.getTime() && hadm.getHoraTermino().getTime() > horaInNot.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hadm.getHoraTermino().getTime() > horaInNot.getTime() && hadm.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuarta.add("Noturno");
+                }
+                if (hadm.getDiaSemana().equals("Quinta") && ((hadm.getHoraTermino().getTime() <= horaMaxMat.getTime() && hadm.getHoraTermino().getTime() > hoarInMat.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hadm.getHoraTermino().getTime() > hoarInMat.getTime() && hadm.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuinta.add("Matutino");
+                }
+                if (hadm.getDiaSemana().equals("Quinta") && ((hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hadm.getHoraTermino().getTime() > horaIntVesp.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hadm.getHoraTermino().getTime() > horaIntVesp.getTime() && hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuinta.add("Vespertino");
+                }
+                if (hadm.getDiaSemana().equals("Quinta") && ((hadm.getHoraTermino().getTime() <= horaMaxNot.getTime() && hadm.getHoraTermino().getTime() > horaInNot.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hadm.getHoraTermino().getTime() > horaInNot.getTime() && hadm.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuinta.add("Noturno");
+                }
+                if (hadm.getDiaSemana().equals("Sexta") && ((hadm.getHoraTermino().getTime() <= horaMaxMat.getTime() && hadm.getHoraTermino().getTime() > hoarInMat.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hadm.getHoraTermino().getTime() > hoarInMat.getTime() && hadm.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSexta.add("Matutino");
+                }
+                if (hadm.getDiaSemana().equals("Sexta") && ((hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hadm.getHoraTermino().getTime() > horaIntVesp.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hadm.getHoraTermino().getTime() > horaIntVesp.getTime() && hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSexta.add("Vespertino");
+                }
+                if (hadm.getDiaSemana().equals("Sexta") && ((hadm.getHoraTermino().getTime() <= horaMaxNot.getTime() && hadm.getHoraTermino().getTime() > horaInNot.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hadm.getHoraTermino().getTime() > horaInNot.getTime() && hadm.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSexta.add("Noturno");
+                }
+                if (hadm.getDiaSemana().equals("Sabado") && ((hadm.getHoraTermino().getTime() <= horaMaxMat.getTime() && hadm.getHoraTermino().getTime() > hoarInMat.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hadm.getHoraTermino().getTime() > hoarInMat.getTime() && hadm.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSabado.add("Matutino");
+                }
+                if (hadm.getDiaSemana().equals("Sabado") && ((hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hadm.getHoraTermino().getTime() > horaIntVesp.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hadm.getHoraTermino().getTime() > horaIntVesp.getTime() && hadm.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSabado.add("Vespertino");
+                }
+                if (hadm.getDiaSemana().equals("Sabado") && ((hadm.getHoraTermino().getTime() <= horaMaxNot.getTime() && hadm.getHoraTermino().getTime() > horaInNot.getTime()) | hadm.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hadm.getHoraTermino().getTime() > horaInNot.getTime() && hadm.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSabado.add("Noturno");
+                }
 
                 for (Horario hadmaux : adm.getHorariosAdministracao()) {
                     if (hadm.getDiaSemana().equals(hadmaux.getDiaSemana()) && hadm.getIdHorario() != hadmaux.getIdHorario()) {
@@ -797,6 +884,62 @@ public class PTDMB implements Serializable {
             }
 
             for (Horario hapoio : apoio.getHorariosApoio()) {
+
+                if (hapoio.getDiaSemana().equals("Segunda") && ((hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime() && hapoio.getHoraTermino().getTime() > hoarInMat.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hapoio.getHoraTermino().getTime() > hoarInMat.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSegunda.add("Matutino");
+                }
+                if (hapoio.getDiaSemana().equals("Segunda") && ((hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hapoio.getHoraTermino().getTime() > horaIntVesp.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hapoio.getHoraTermino().getTime() > horaIntVesp.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSegunda.add("Vespertino");
+                }
+                if (hapoio.getDiaSemana().equals("Segunda") && ((hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime() && hapoio.getHoraTermino().getTime() > horaInNot.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hapoio.getHoraTermino().getTime() > horaInNot.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSegunda.add("Noturno");
+                }
+                if (hapoio.getDiaSemana().equals("Terça") && ((hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime() && hapoio.getHoraTermino().getTime() > hoarInMat.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hapoio.getHoraTermino().getTime() > hoarInMat.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesTerca.add("Matutino");
+                }
+                if (hapoio.getDiaSemana().equals("Terça") && ((hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hapoio.getHoraTermino().getTime() > horaIntVesp.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hapoio.getHoraTermino().getTime() > horaIntVesp.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesTerca.add("Vespertino");
+                }
+                if (hapoio.getDiaSemana().equals("Terça") && ((hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime() && hapoio.getHoraTermino().getTime() > horaInNot.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hapoio.getHoraTermino().getTime() > horaInNot.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesTerca.add("Noturno");
+                }
+                if (hapoio.getDiaSemana().equals("Quarta") && ((hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime() && hapoio.getHoraTermino().getTime() > hoarInMat.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hapoio.getHoraTermino().getTime() > hoarInMat.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuarta.add("Matutino");
+                }
+                if (hapoio.getDiaSemana().equals("Quarta") && ((hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hapoio.getHoraTermino().getTime() > horaIntVesp.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hapoio.getHoraTermino().getTime() > horaIntVesp.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuarta.add("Vespertino");
+                }
+                if (hapoio.getDiaSemana().equals("Quarta") && ((hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime() && hapoio.getHoraTermino().getTime() > horaInNot.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hapoio.getHoraTermino().getTime() > horaInNot.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuarta.add("Noturno");
+                }
+                if (hapoio.getDiaSemana().equals("Quinta") && ((hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime() && hapoio.getHoraTermino().getTime() > hoarInMat.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hapoio.getHoraTermino().getTime() > hoarInMat.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuinta.add("Matutino");
+                }
+                if (hapoio.getDiaSemana().equals("Quinta") && ((hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hapoio.getHoraTermino().getTime() > horaIntVesp.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hapoio.getHoraTermino().getTime() > horaIntVesp.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuinta.add("Vespertino");
+                }
+                if (hapoio.getDiaSemana().equals("Quinta") && ((hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime() && hapoio.getHoraTermino().getTime() > horaInNot.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hapoio.getHoraTermino().getTime() > horaInNot.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuinta.add("Noturno");
+                }
+                if (hapoio.getDiaSemana().equals("Sexta") && ((hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime() && hapoio.getHoraTermino().getTime() > hoarInMat.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hapoio.getHoraTermino().getTime() > hoarInMat.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSexta.add("Matutino");
+                }
+                if (hapoio.getDiaSemana().equals("Sexta") && ((hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hapoio.getHoraTermino().getTime() > horaIntVesp.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hapoio.getHoraTermino().getTime() > horaIntVesp.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSexta.add("Vespertino");
+                }
+                if (hapoio.getDiaSemana().equals("Sexta") && ((hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime() && hapoio.getHoraTermino().getTime() > horaInNot.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hapoio.getHoraTermino().getTime() > horaInNot.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSexta.add("Noturno");
+                }
+                if (hapoio.getDiaSemana().equals("Sabado") && ((hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime() && hapoio.getHoraTermino().getTime() > hoarInMat.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hapoio.getHoraTermino().getTime() > hoarInMat.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSabado.add("Matutino");
+                }
+                if (hapoio.getDiaSemana().equals("Sabado") && ((hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hapoio.getHoraTermino().getTime() > horaIntVesp.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hapoio.getHoraTermino().getTime() > horaIntVesp.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSabado.add("Vespertino");
+                }
+                if (hapoio.getDiaSemana().equals("Sabado") && ((hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime() && hapoio.getHoraTermino().getTime() > horaInNot.getTime()) | hapoio.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hapoio.getHoraTermino().getTime() > horaInNot.getTime() && hapoio.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSabado.add("Noturno");
+                }
+
                 for (Horario hapoioaux : apoio.getHorariosApoio()) {
                     if (hapoio.getDiaSemana().equals(hapoioaux.getDiaSemana()) && hapoio.getIdHorario() != hapoioaux.getIdHorario()) {
 
@@ -907,6 +1050,62 @@ public class PTDMB implements Serializable {
             }
 
             for (Horario hasp : aSP.getHorariosAtividadesASerProposta()) {
+
+                if (hasp.getDiaSemana().equals("Segunda") && ((hasp.getHoraTermino().getTime() <= horaMaxMat.getTime() && hasp.getHoraTermino().getTime() > hoarInMat.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hasp.getHoraTermino().getTime() > hoarInMat.getTime() && hasp.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSegunda.add("Matutino");
+                }
+                if (hasp.getDiaSemana().equals("Segunda") && ((hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hasp.getHoraTermino().getTime() > horaIntVesp.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hasp.getHoraTermino().getTime() > horaIntVesp.getTime() && hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSegunda.add("Vespertino");
+                }
+                if (hasp.getDiaSemana().equals("Segunda") && ((hasp.getHoraTermino().getTime() <= horaMaxNot.getTime() && hasp.getHoraTermino().getTime() > horaInNot.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hasp.getHoraTermino().getTime() > horaInNot.getTime() && hasp.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSegunda.add("Noturno");
+                }
+                if (hasp.getDiaSemana().equals("Terça") && ((hasp.getHoraTermino().getTime() <= horaMaxMat.getTime() && hasp.getHoraTermino().getTime() > hoarInMat.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hasp.getHoraTermino().getTime() > hoarInMat.getTime() && hasp.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesTerca.add("Matutino");
+                }
+                if (hasp.getDiaSemana().equals("Terça") && ((hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hasp.getHoraTermino().getTime() > horaIntVesp.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hasp.getHoraTermino().getTime() > horaIntVesp.getTime() && hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesTerca.add("Vespertino");
+                }
+                if (hasp.getDiaSemana().equals("Terça") && ((hasp.getHoraTermino().getTime() <= horaMaxNot.getTime() && hasp.getHoraTermino().getTime() > horaInNot.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hasp.getHoraTermino().getTime() > horaInNot.getTime() && hasp.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesTerca.add("Noturno");
+                }
+                if (hasp.getDiaSemana().equals("Quarta") && ((hasp.getHoraTermino().getTime() <= horaMaxMat.getTime() && hasp.getHoraTermino().getTime() > hoarInMat.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hasp.getHoraTermino().getTime() > hoarInMat.getTime() && hasp.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuarta.add("Matutino");
+                }
+                if (hasp.getDiaSemana().equals("Quarta") && ((hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hasp.getHoraTermino().getTime() > horaIntVesp.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hasp.getHoraTermino().getTime() > horaIntVesp.getTime() && hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuarta.add("Vespertino");
+                }
+                if (hasp.getDiaSemana().equals("Quarta") && ((hasp.getHoraTermino().getTime() <= horaMaxNot.getTime() && hasp.getHoraTermino().getTime() > horaInNot.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hasp.getHoraTermino().getTime() > horaInNot.getTime() && hasp.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuarta.add("Noturno");
+                }
+                if (hasp.getDiaSemana().equals("Quinta") && ((hasp.getHoraTermino().getTime() <= horaMaxMat.getTime() && hasp.getHoraTermino().getTime() > hoarInMat.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hasp.getHoraTermino().getTime() > hoarInMat.getTime() && hasp.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuinta.add("Matutino");
+                }
+                if (hasp.getDiaSemana().equals("Quinta") && ((hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hasp.getHoraTermino().getTime() > horaIntVesp.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hasp.getHoraTermino().getTime() > horaIntVesp.getTime() && hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuinta.add("Vespertino");
+                }
+                if (hasp.getDiaSemana().equals("Quinta") && ((hasp.getHoraTermino().getTime() <= horaMaxNot.getTime() && hasp.getHoraTermino().getTime() > horaInNot.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hasp.getHoraTermino().getTime() > horaInNot.getTime() && hasp.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuinta.add("Noturno");
+                }
+                if (hasp.getDiaSemana().equals("Sexta") && ((hasp.getHoraTermino().getTime() <= horaMaxMat.getTime() && hasp.getHoraTermino().getTime() > hoarInMat.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hasp.getHoraTermino().getTime() > hoarInMat.getTime() && hasp.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSexta.add("Matutino");
+                }
+                if (hasp.getDiaSemana().equals("Sexta") && ((hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hasp.getHoraTermino().getTime() > horaIntVesp.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hasp.getHoraTermino().getTime() > horaIntVesp.getTime() && hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSexta.add("Vespertino");
+                }
+                if (hasp.getDiaSemana().equals("Sexta") && ((hasp.getHoraTermino().getTime() <= horaMaxNot.getTime() && hasp.getHoraTermino().getTime() > horaInNot.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hasp.getHoraTermino().getTime() > horaInNot.getTime() && hasp.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSexta.add("Noturno");
+                }
+                if (hasp.getDiaSemana().equals("Sabado") && ((hasp.getHoraTermino().getTime() <= horaMaxMat.getTime() && hasp.getHoraTermino().getTime() > hoarInMat.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hasp.getHoraTermino().getTime() > hoarInMat.getTime() && hasp.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSabado.add("Matutino");
+                }
+                if (hasp.getDiaSemana().equals("Sabado") && ((hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hasp.getHoraTermino().getTime() > horaIntVesp.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hasp.getHoraTermino().getTime() > horaIntVesp.getTime() && hasp.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSabado.add("Vespertino");
+                }
+                if (hasp.getDiaSemana().equals("Sabado") && ((hasp.getHoraTermino().getTime() <= horaMaxNot.getTime() && hasp.getHoraTermino().getTime() > horaInNot.getTime()) | hasp.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hasp.getHoraTermino().getTime() > horaInNot.getTime() && hasp.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSabado.add("Noturno");
+                }
+
                 for (Horario haspaux : aSP.getHorariosAtividadesASerProposta()) {
                     if (hasp.getDiaSemana().equals(haspaux.getDiaSemana()) && hasp.getIdHorario() != haspaux.getIdHorario()) {
 
@@ -972,6 +1171,62 @@ public class PTDMB implements Serializable {
             }
 
             for (Horario ha : aula.getHorariosAula()) {
+
+                if (ha.getDiaSemana().equals("Segunda") && ((ha.getHoraTermino().getTime() <= horaMaxMat.getTime() && ha.getHoraTermino().getTime() > hoarInMat.getTime()) | ha.getHoraInicio().getTime() <= horaMaxMat.getTime() | (ha.getHoraTermino().getTime() > hoarInMat.getTime() && ha.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSegunda.add("Matutino");
+                }
+                if (ha.getDiaSemana().equals("Segunda") && ((ha.getHoraTermino().getTime() <= horaMaxVesp.getTime() && ha.getHoraTermino().getTime() > horaIntVesp.getTime()) | ha.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (ha.getHoraTermino().getTime() > horaIntVesp.getTime() && ha.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSegunda.add("Vespertino");
+                }
+                if (ha.getDiaSemana().equals("Segunda") && ((ha.getHoraTermino().getTime() <= horaMaxNot.getTime() && ha.getHoraTermino().getTime() > horaInNot.getTime()) | ha.getHoraInicio().getTime() <= horaMaxNot.getTime() | (ha.getHoraTermino().getTime() > horaInNot.getTime() && ha.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSegunda.add("Noturno");
+                }
+                if (ha.getDiaSemana().equals("Terça") && ((ha.getHoraTermino().getTime() <= horaMaxMat.getTime() && ha.getHoraTermino().getTime() > hoarInMat.getTime()) | ha.getHoraInicio().getTime() <= horaMaxMat.getTime() | (ha.getHoraTermino().getTime() > hoarInMat.getTime() && ha.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesTerca.add("Matutino");
+                }
+                if (ha.getDiaSemana().equals("Terça") && ((ha.getHoraTermino().getTime() <= horaMaxVesp.getTime() && ha.getHoraTermino().getTime() > horaIntVesp.getTime()) | ha.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (ha.getHoraTermino().getTime() > horaIntVesp.getTime() && ha.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesTerca.add("Vespertino");
+                }
+                if (ha.getDiaSemana().equals("Terça") && ((ha.getHoraTermino().getTime() <= horaMaxNot.getTime() && ha.getHoraTermino().getTime() > horaInNot.getTime()) | ha.getHoraInicio().getTime() <= horaMaxNot.getTime() | (ha.getHoraTermino().getTime() > horaInNot.getTime() && ha.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesTerca.add("Noturno");
+                }
+                if (ha.getDiaSemana().equals("Quarta") && ((ha.getHoraTermino().getTime() <= horaMaxMat.getTime() && ha.getHoraTermino().getTime() > hoarInMat.getTime()) | ha.getHoraInicio().getTime() <= horaMaxMat.getTime() | (ha.getHoraTermino().getTime() > hoarInMat.getTime() && ha.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuarta.add("Matutino");
+                }
+                if (ha.getDiaSemana().equals("Quarta") && ((ha.getHoraTermino().getTime() <= horaMaxVesp.getTime() && ha.getHoraTermino().getTime() > horaIntVesp.getTime()) | ha.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (ha.getHoraTermino().getTime() > horaIntVesp.getTime() && ha.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuarta.add("Vespertino");
+                }
+                if (ha.getDiaSemana().equals("Quarta") && ((ha.getHoraTermino().getTime() <= horaMaxNot.getTime() && ha.getHoraTermino().getTime() > horaInNot.getTime()) | ha.getHoraInicio().getTime() <= horaMaxNot.getTime() | (ha.getHoraTermino().getTime() > horaInNot.getTime() && ha.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuarta.add("Noturno");
+                }
+                if (ha.getDiaSemana().equals("Quinta") && ((ha.getHoraTermino().getTime() <= horaMaxMat.getTime() && ha.getHoraTermino().getTime() > hoarInMat.getTime()) | ha.getHoraInicio().getTime() <= horaMaxMat.getTime() | (ha.getHoraTermino().getTime() > hoarInMat.getTime() && ha.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuinta.add("Matutino");
+                }
+                if (ha.getDiaSemana().equals("Quinta") && ((ha.getHoraTermino().getTime() <= horaMaxVesp.getTime() && ha.getHoraTermino().getTime() > horaIntVesp.getTime()) | ha.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (ha.getHoraTermino().getTime() > horaIntVesp.getTime() && ha.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuinta.add("Vespertino");
+                }
+                if (ha.getDiaSemana().equals("Quinta") && ((ha.getHoraTermino().getTime() <= horaMaxNot.getTime() && ha.getHoraTermino().getTime() > horaInNot.getTime()) | ha.getHoraInicio().getTime() <= horaMaxNot.getTime() | (ha.getHoraTermino().getTime() > horaInNot.getTime() && ha.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuinta.add("Noturno");
+                }
+                if (ha.getDiaSemana().equals("Sexta") && ((ha.getHoraTermino().getTime() <= horaMaxMat.getTime() && ha.getHoraTermino().getTime() > hoarInMat.getTime()) | ha.getHoraInicio().getTime() <= horaMaxMat.getTime() | (ha.getHoraTermino().getTime() > hoarInMat.getTime() && ha.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSexta.add("Matutino");
+                }
+                if (ha.getDiaSemana().equals("Sexta") && ((ha.getHoraTermino().getTime() <= horaMaxVesp.getTime() && ha.getHoraTermino().getTime() > horaIntVesp.getTime()) | ha.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (ha.getHoraTermino().getTime() > horaIntVesp.getTime() && ha.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSexta.add("Vespertino");
+                }
+                if (ha.getDiaSemana().equals("Sexta") && ((ha.getHoraTermino().getTime() <= horaMaxNot.getTime() && ha.getHoraTermino().getTime() > horaInNot.getTime()) | ha.getHoraInicio().getTime() <= horaMaxNot.getTime() | (ha.getHoraTermino().getTime() > horaInNot.getTime() && ha.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSexta.add("Noturno");
+                }
+                if (ha.getDiaSemana().equals("Sabado") && ((ha.getHoraTermino().getTime() <= horaMaxMat.getTime() && ha.getHoraTermino().getTime() > hoarInMat.getTime()) | ha.getHoraInicio().getTime() <= horaMaxMat.getTime() | (ha.getHoraTermino().getTime() > hoarInMat.getTime() && ha.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSabado.add("Matutino");
+                }
+                if (ha.getDiaSemana().equals("Sabado") && ((ha.getHoraTermino().getTime() <= horaMaxVesp.getTime() && ha.getHoraTermino().getTime() > horaIntVesp.getTime()) | ha.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (ha.getHoraTermino().getTime() > horaIntVesp.getTime() && ha.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSabado.add("Vespertino");
+                }
+                if (ha.getDiaSemana().equals("Sabado") && ((ha.getHoraTermino().getTime() <= horaMaxNot.getTime() && ha.getHoraTermino().getTime() > horaInNot.getTime()) | ha.getHoraInicio().getTime() <= horaMaxNot.getTime() | (ha.getHoraTermino().getTime() > horaInNot.getTime() && ha.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSabado.add("Noturno");
+                }
+
                 for (Horario haulaaux : aula.getHorariosAula()) {
                     if (ha.getDiaSemana().equals(haulaaux.getDiaSemana()) && ha.getIdHorario() != haulaaux.getIdHorario()) {
 
@@ -1085,6 +1340,62 @@ public class PTDMB implements Serializable {
             }
 
             for (Horario hME : mE.getHorariosManutecao()) {
+
+                if (hME.getDiaSemana().equals("Segunda") && ((hME.getHoraTermino().getTime() <= horaMaxMat.getTime() && hME.getHoraTermino().getTime() > hoarInMat.getTime()) | hME.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hME.getHoraTermino().getTime() > hoarInMat.getTime() && hME.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSegunda.add("Matutino");
+                }
+                if (hME.getDiaSemana().equals("Segunda") && ((hME.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hME.getHoraTermino().getTime() > horaIntVesp.getTime()) | hME.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hME.getHoraTermino().getTime() > horaIntVesp.getTime() && hME.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSegunda.add("Vespertino");
+                }
+                if (hME.getDiaSemana().equals("Segunda") && ((hME.getHoraTermino().getTime() <= horaMaxNot.getTime() && hME.getHoraTermino().getTime() > horaInNot.getTime()) | hME.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hME.getHoraTermino().getTime() > horaInNot.getTime() && hME.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSegunda.add("Noturno");
+                }
+                if (hME.getDiaSemana().equals("Terça") && ((hME.getHoraTermino().getTime() <= horaMaxMat.getTime() && hME.getHoraTermino().getTime() > hoarInMat.getTime()) | hME.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hME.getHoraTermino().getTime() > hoarInMat.getTime() && hME.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesTerca.add("Matutino");
+                }
+                if (hME.getDiaSemana().equals("Terça") && ((hME.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hME.getHoraTermino().getTime() > horaIntVesp.getTime()) | hME.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hME.getHoraTermino().getTime() > horaIntVesp.getTime() && hME.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesTerca.add("Vespertino");
+                }
+                if (hME.getDiaSemana().equals("Terça") && ((hME.getHoraTermino().getTime() <= horaMaxNot.getTime() && hME.getHoraTermino().getTime() > horaInNot.getTime()) | hME.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hME.getHoraTermino().getTime() > horaInNot.getTime() && hME.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesTerca.add("Noturno");
+                }
+                if (hME.getDiaSemana().equals("Quarta") && ((hME.getHoraTermino().getTime() <= horaMaxMat.getTime() && hME.getHoraTermino().getTime() > hoarInMat.getTime()) | hME.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hME.getHoraTermino().getTime() > hoarInMat.getTime() && hME.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuarta.add("Matutino");
+                }
+                if (hME.getDiaSemana().equals("Quarta") && ((hME.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hME.getHoraTermino().getTime() > horaIntVesp.getTime()) | hME.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hME.getHoraTermino().getTime() > horaIntVesp.getTime() && hME.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuarta.add("Vespertino");
+                }
+                if (hME.getDiaSemana().equals("Quarta") && ((hME.getHoraTermino().getTime() <= horaMaxNot.getTime() && hME.getHoraTermino().getTime() > horaInNot.getTime()) | hME.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hME.getHoraTermino().getTime() > horaInNot.getTime() && hME.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuarta.add("Noturno");
+                }
+                if (hME.getDiaSemana().equals("Quinta") && ((hME.getHoraTermino().getTime() <= horaMaxMat.getTime() && hME.getHoraTermino().getTime() > hoarInMat.getTime()) | hME.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hME.getHoraTermino().getTime() > hoarInMat.getTime() && hME.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuinta.add("Matutino");
+                }
+                if (hME.getDiaSemana().equals("Quinta") && ((hME.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hME.getHoraTermino().getTime() > horaIntVesp.getTime()) | hME.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hME.getHoraTermino().getTime() > horaIntVesp.getTime() && hME.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuinta.add("Vespertino");
+                }
+                if (hME.getDiaSemana().equals("Quinta") && ((hME.getHoraTermino().getTime() <= horaMaxNot.getTime() && hME.getHoraTermino().getTime() > horaInNot.getTime()) | hME.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hME.getHoraTermino().getTime() > horaInNot.getTime() && hME.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuinta.add("Noturno");
+                }
+                if (hME.getDiaSemana().equals("Sexta") && ((hME.getHoraTermino().getTime() <= horaMaxMat.getTime() && hME.getHoraTermino().getTime() > hoarInMat.getTime()) | hME.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hME.getHoraTermino().getTime() > hoarInMat.getTime() && hME.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSexta.add("Matutino");
+                }
+                if (hME.getDiaSemana().equals("Sexta") && ((hME.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hME.getHoraTermino().getTime() > horaIntVesp.getTime()) | hME.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hME.getHoraTermino().getTime() > horaIntVesp.getTime() && hME.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSexta.add("Vespertino");
+                }
+                if (hME.getDiaSemana().equals("Sexta") && ((hME.getHoraTermino().getTime() <= horaMaxNot.getTime() && hME.getHoraTermino().getTime() > horaInNot.getTime()) | hME.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hME.getHoraTermino().getTime() > horaInNot.getTime() && hME.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSexta.add("Noturno");
+                }
+                if (hME.getDiaSemana().equals("Sabado") && ((hME.getHoraTermino().getTime() <= horaMaxMat.getTime() && hME.getHoraTermino().getTime() > hoarInMat.getTime()) | hME.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hME.getHoraTermino().getTime() > hoarInMat.getTime() && hME.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSabado.add("Matutino");
+                }
+                if (hME.getDiaSemana().equals("Sabado") && ((hME.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hME.getHoraTermino().getTime() > horaIntVesp.getTime()) | hME.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hME.getHoraTermino().getTime() > horaIntVesp.getTime() && hME.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSabado.add("Vespertino");
+                }
+                if (hME.getDiaSemana().equals("Sabado") && ((hME.getHoraTermino().getTime() <= horaMaxNot.getTime() && hME.getHoraTermino().getTime() > horaInNot.getTime()) | hME.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hME.getHoraTermino().getTime() > horaInNot.getTime() && hME.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSabado.add("Noturno");
+                }
+
                 for (Horario hmanuaux : mE.getHorariosManutecao()) {
                     if (hME.getDiaSemana().equals(hmanuaux.getDiaSemana()) && hME.getIdHorario() != hmanuaux.getIdHorario()) {
 
@@ -1191,6 +1502,61 @@ public class PTDMB implements Serializable {
             }
 
             for (Horario hoTa : oTA.getHorariosOutroTipoAtividade()) {
+
+                if (hoTa.getDiaSemana().equals("Segunda") && ((hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime() && hoTa.getHoraTermino().getTime() > hoarInMat.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hoTa.getHoraTermino().getTime() > hoarInMat.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSegunda.add("Matutino");
+                }
+                if (hoTa.getDiaSemana().equals("Segunda") && ((hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hoTa.getHoraTermino().getTime() > horaIntVesp.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hoTa.getHoraTermino().getTime() > horaIntVesp.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSegunda.add("Vespertino");
+                }
+                if (hoTa.getDiaSemana().equals("Segunda") && ((hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime() && hoTa.getHoraTermino().getTime() > horaInNot.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hoTa.getHoraTermino().getTime() > horaInNot.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSegunda.add("Noturno");
+                }
+                if (hoTa.getDiaSemana().equals("Terça") && ((hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime() && hoTa.getHoraTermino().getTime() > hoarInMat.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hoTa.getHoraTermino().getTime() > hoarInMat.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesTerca.add("Matutino");
+                }
+                if (hoTa.getDiaSemana().equals("Terça") && ((hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hoTa.getHoraTermino().getTime() > horaIntVesp.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hoTa.getHoraTermino().getTime() > horaIntVesp.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesTerca.add("Vespertino");
+                }
+                if (hoTa.getDiaSemana().equals("Terça") && ((hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime() && hoTa.getHoraTermino().getTime() > horaInNot.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hoTa.getHoraTermino().getTime() > horaInNot.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesTerca.add("Noturno");
+                }
+                if (hoTa.getDiaSemana().equals("Quarta") && ((hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime() && hoTa.getHoraTermino().getTime() > hoarInMat.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hoTa.getHoraTermino().getTime() > hoarInMat.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuarta.add("Matutino");
+                }
+                if (hoTa.getDiaSemana().equals("Quarta") && ((hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hoTa.getHoraTermino().getTime() > horaIntVesp.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hoTa.getHoraTermino().getTime() > horaIntVesp.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuarta.add("Vespertino");
+                }
+                if (hoTa.getDiaSemana().equals("Quarta") && ((hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime() && hoTa.getHoraTermino().getTime() > horaInNot.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hoTa.getHoraTermino().getTime() > horaInNot.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuarta.add("Noturno");
+                }
+                if (hoTa.getDiaSemana().equals("Quinta") && ((hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime() && hoTa.getHoraTermino().getTime() > hoarInMat.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hoTa.getHoraTermino().getTime() > hoarInMat.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesQuinta.add("Matutino");
+                }
+                if (hoTa.getDiaSemana().equals("Quinta") && ((hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hoTa.getHoraTermino().getTime() > horaIntVesp.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hoTa.getHoraTermino().getTime() > horaIntVesp.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesQuinta.add("Vespertino");
+                }
+                if (hoTa.getDiaSemana().equals("Quinta") && ((hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime() && hoTa.getHoraTermino().getTime() > horaInNot.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hoTa.getHoraTermino().getTime() > horaInNot.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesQuinta.add("Noturno");
+                }
+                if (hoTa.getDiaSemana().equals("Sexta") && ((hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime() && hoTa.getHoraTermino().getTime() > hoarInMat.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hoTa.getHoraTermino().getTime() > hoarInMat.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSexta.add("Matutino");
+                }
+                if (hoTa.getDiaSemana().equals("Sexta") && ((hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hoTa.getHoraTermino().getTime() > horaIntVesp.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hoTa.getHoraTermino().getTime() > horaIntVesp.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSexta.add("Vespertino");
+                }
+                if (hoTa.getDiaSemana().equals("Sexta") && ((hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime() && hoTa.getHoraTermino().getTime() > horaInNot.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hoTa.getHoraTermino().getTime() > horaInNot.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSexta.add("Noturno");
+                }
+                if (hoTa.getDiaSemana().equals("Sabado") && ((hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime() && hoTa.getHoraTermino().getTime() > hoarInMat.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hoTa.getHoraTermino().getTime() > hoarInMat.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                    periodoAtividadesSabado.add("Matutino");
+                }
+                if (hoTa.getDiaSemana().equals("Sabado") && ((hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hoTa.getHoraTermino().getTime() > horaIntVesp.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hoTa.getHoraTermino().getTime() > horaIntVesp.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                    periodoAtividadesSabado.add("Vespertino");
+                }
+                if (hoTa.getDiaSemana().equals("Sabado") && ((hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime() && hoTa.getHoraTermino().getTime() > horaInNot.getTime()) | hoTa.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hoTa.getHoraTermino().getTime() > horaInNot.getTime() && hoTa.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                    periodoAtividadesSabado.add("Noturno");
+                }
 
                 for (Horario hhotaaux : oTA.getHorariosOutroTipoAtividade()) {
                     if (hoTa.getDiaSemana().equals(hhotaaux.getDiaSemana()) && hoTa.getIdHorario() != hhotaaux.getIdHorario()) {
@@ -1300,6 +1666,62 @@ public class PTDMB implements Serializable {
 
             if (p.getRotulo().equalsIgnoreCase("Autor")) {
                 for (Horario hpartAutor : p.getHorariosParticipacao()) {
+
+                    if (hpartAutor.getDiaSemana().equals("Segunda") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesSegunda.add("Matutino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Segunda") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesSegunda.add("Vespertino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Segunda") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartAutor.getHoraTermino().getTime() > horaInNot.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartAutor.getHoraTermino().getTime() > horaInNot.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesSegunda.add("Noturno");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Terça") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesTerca.add("Matutino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Terça") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesTerca.add("Vespertino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Terça") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartAutor.getHoraTermino().getTime() > horaInNot.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartAutor.getHoraTermino().getTime() > horaInNot.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesTerca.add("Noturno");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Quarta") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesQuarta.add("Matutino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Quarta") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesQuarta.add("Vespertino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Quarta") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartAutor.getHoraTermino().getTime() > horaInNot.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartAutor.getHoraTermino().getTime() > horaInNot.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesQuarta.add("Noturno");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Quinta") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesQuinta.add("Matutino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Quinta") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesQuinta.add("Vespertino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Quinta") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartAutor.getHoraTermino().getTime() > horaInNot.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartAutor.getHoraTermino().getTime() > horaInNot.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesQuinta.add("Noturno");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Sexta") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesSexta.add("Matutino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Sexta") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesSexta.add("Vespertino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Sexta") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartAutor.getHoraTermino().getTime() > horaInNot.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartAutor.getHoraTermino().getTime() > horaInNot.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesSexta.add("Noturno");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Sabado") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartAutor.getHoraTermino().getTime() > hoarInMat.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesSabado.add("Matutino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Sabado") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartAutor.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesSabado.add("Vespertino");
+                    }
+                    if (hpartAutor.getDiaSemana().equals("Sabado") && ((hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartAutor.getHoraTermino().getTime() > horaInNot.getTime()) | hpartAutor.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartAutor.getHoraTermino().getTime() > horaInNot.getTime() && hpartAutor.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesSabado.add("Noturno");
+                    }
+
                     for (Horario hpartAutoraux : p.getHorariosParticipacao()) {
                         if (hpartAutor.getDiaSemana().equals(hpartAutoraux.getDiaSemana()) && hpartAutor.getIdHorario() != hpartAutoraux.getIdHorario()) {
 
@@ -1410,6 +1832,62 @@ public class PTDMB implements Serializable {
                 }
             } else if (p.getRotulo().equalsIgnoreCase("Colaborador")) {
                 for (Horario hpartColab : p.getHorariosParticipacao()) {
+
+                    if (hpartColab.getDiaSemana().equals("Segunda") && ((hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartColab.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartColab.getHoraTermino().getTime() > hoarInMat.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesSegunda.add("Matutino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Segunda") && ((hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesSegunda.add("Vespertino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Segunda") && ((hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartColab.getHoraTermino().getTime() > horaInNot.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartColab.getHoraTermino().getTime() > horaInNot.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesSegunda.add("Noturno");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Terça") && ((hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartColab.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartColab.getHoraTermino().getTime() > hoarInMat.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesTerca.add("Matutino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Terça") && ((hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesTerca.add("Vespertino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Terça") && ((hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartColab.getHoraTermino().getTime() > horaInNot.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartColab.getHoraTermino().getTime() > horaInNot.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesTerca.add("Noturno");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Quarta") && ((hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartColab.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartColab.getHoraTermino().getTime() > hoarInMat.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesQuarta.add("Matutino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Quarta") && ((hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesQuarta.add("Vespertino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Quarta") && ((hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartColab.getHoraTermino().getTime() > horaInNot.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartColab.getHoraTermino().getTime() > horaInNot.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesQuarta.add("Noturno");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Quinta") && ((hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartColab.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartColab.getHoraTermino().getTime() > hoarInMat.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesQuinta.add("Matutino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Quinta") && ((hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesQuinta.add("Vespertino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Quinta") && ((hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartColab.getHoraTermino().getTime() > horaInNot.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartColab.getHoraTermino().getTime() > horaInNot.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesQuinta.add("Noturno");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Sexta") && ((hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartColab.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartColab.getHoraTermino().getTime() > hoarInMat.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesSexta.add("Matutino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Sexta") && ((hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesSexta.add("Vespertino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Sexta") && ((hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartColab.getHoraTermino().getTime() > horaInNot.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartColab.getHoraTermino().getTime() > horaInNot.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesSexta.add("Noturno");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Sabado") && ((hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime() && hpartColab.getHoraTermino().getTime() > hoarInMat.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxMat.getTime() | (hpartColab.getHoraTermino().getTime() > hoarInMat.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxMat.getTime()))) {
+                        periodoAtividadesSabado.add("Matutino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Sabado") && ((hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime() && hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxVesp.getTime() | (hpartColab.getHoraTermino().getTime() > horaIntVesp.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxVesp.getTime()))) {
+                        periodoAtividadesSabado.add("Vespertino");
+                    }
+                    if (hpartColab.getDiaSemana().equals("Sabado") && ((hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime() && hpartColab.getHoraTermino().getTime() > horaInNot.getTime()) | hpartColab.getHoraInicio().getTime() <= horaMaxNot.getTime() | (hpartColab.getHoraTermino().getTime() > horaInNot.getTime() && hpartColab.getHoraTermino().getTime() <= horaMaxNot.getTime()))) {
+                        periodoAtividadesSabado.add("Noturno");
+                    }
+
                     for (Horario hpartColabaux : p.getHorariosParticipacao()) {
                         if (hpartColab.getDiaSemana().equals(hpartColabaux.getDiaSemana()) && hpartColab.getIdHorario() != hpartColabaux.getIdHorario()) {
 
@@ -1521,6 +1999,33 @@ public class PTDMB implements Serializable {
             }
 
         }
+        if ((periodoAtividadesSegunda.contains("Matutino") == true) && (periodoAtividadesSegunda.contains("Vespertino") == true) && (periodoAtividadesSegunda.contains("Noturno") == true)) {
+
+            errosTurno.add("Você possui atividades em três turnos na Segunda-feira");
+            
+        }else if ((periodoAtividadesTerca.contains("Matutino") == true) && (periodoAtividadesTerca.contains("Vespertino") == true) && (periodoAtividadesTerca.contains("Noturno") == true)) {
+
+            errosTurno.add("Você possui atividades em três turnos na Terça-feira");
+            
+        }else if ((periodoAtividadesQuarta.contains("Matutino") == true) && (periodoAtividadesQuarta.contains("Vespertino") == true) && (periodoAtividadesQuarta.contains("Noturno") == true)) {
+
+            errosTurno.add("Você possui atividades em três turnos na Quarta-feira");
+            
+        }else if ((periodoAtividadesQuinta.contains("Matutino") == true) && (periodoAtividadesQuinta.contains("Vespertino") == true) && (periodoAtividadesQuinta.contains("Noturno") == true)) {
+
+            errosTurno.add("Você possui atividades em três turnos na Quinta-feira");
+            
+        }else if ((periodoAtividadesSexta.contains("Matutino") == true) && (periodoAtividadesSexta.contains("Vespertino") == true) && (periodoAtividadesSexta.contains("Noturno") == true)) {
+
+            errosTurno.add("Você possui atividades em três turnos na Sexta-feira");
+            
+        }else if ((periodoAtividadesSabado.contains("Matutino") == true) && (periodoAtividadesSabado.contains("Vespertino") == true) && (periodoAtividadesSabado.contains("Noturno") == true)) {
+
+            errosTurno.add("Você possui atividades em três turnos no Sábado");
+            
+        }
+        
+
     }
 
     /*
